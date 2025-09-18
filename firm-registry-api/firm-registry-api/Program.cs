@@ -1,6 +1,8 @@
+using firm_registry_api;
 using firm_registry_api.Data;
-using Microsoft.EntityFrameworkCore;
+using firm_registry_api.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -45,6 +47,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.ConfigureModule(builder.Configuration);
 
 var app = builder.Build();
 
