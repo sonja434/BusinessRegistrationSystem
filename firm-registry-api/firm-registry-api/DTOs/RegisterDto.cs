@@ -19,8 +19,6 @@ namespace firm_registry_api.DTOs
 
         public string Residence { get; set; }
 
-        public string Username { get; set; }
-
         [EmailAddress]
         public string Email { get; set; }
 

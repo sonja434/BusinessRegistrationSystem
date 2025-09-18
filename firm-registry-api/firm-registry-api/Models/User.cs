@@ -41,9 +41,9 @@ namespace firm_registry_api.Models
 
         public bool IsValidDateOfBirth()
         {
-            if (DateOfBirth < new DateTime(1, 1, 1)) return false;
-            if (DateOfBirth > DateTime.Now) return false;
-            return true;
+            var earliestDate = DateTime.Today.AddYears(-120);
+            var latestDate = DateTime.Today.AddYears(-18);
+            return DateOfBirth >= earliestDate && DateOfBirth <= latestDate;
         }
     }
 }
