@@ -22,6 +22,7 @@ namespace firm_registry_api.Mappers
             CreateMap <PartnershipRequestDto, PartnershipRequest>().ReverseMap();
             CreateMap<ActivityGroup, ActivityGroupDto>();
             CreateMap<ActivityCode, ActivityCodeDto>();
+            CreateMap<ActivitySector, ActivitySectorDto>();
             CreateMap<CompanyRequest, CompanyRequestResponseDto>()
                 .Include<EntrepreneurRequest, EntrepreneurRequestResponseDto>()
                 .Include<LimitedCompanyRequest, LimitedCompanyRequestResponseDto>()

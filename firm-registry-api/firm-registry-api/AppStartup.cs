@@ -18,6 +18,7 @@ namespace firm_registry_api
             services.AddScoped<IActivityGroupRepository, ActivityGroupRepository>();
             services.AddScoped<IActivityCodeRepository, ActivityCodeRepository>();
             services.AddScoped<ICompanyRequestRepository, CompanyRequestRepository>();
+            services.AddScoped<IActivitySectorRepository, ActivitySectorRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IActivityService, ActivityService>();

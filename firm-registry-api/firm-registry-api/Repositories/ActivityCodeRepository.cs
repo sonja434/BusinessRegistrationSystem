@@ -33,5 +33,36 @@ namespace firm_registry_api.Repositories
                 .Include(c => c.ActivityGroup)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
+
+        public async Task<(List<ActivityCode> items, int totalItems)> GetPagedAsync(
+    int pageNumber, int pageSize, int? sectorId, int? groupId, string? search)
+        {
+            var query = _context.ActivityCodes.AsQueryable();
+
+            if (groupId.HasValue)
+            {
+                query = query.Where(a => a.ActivityGroupId == groupId.Value);
+            }
+            else if (sectorId.HasValue)
+            {
+                query = query.Where(a => a.ActivityGroup.ActivitySectorId == sectorId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(a => a.Description.ToLower().Contains(search.ToLower()));
+            }
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(a => a.Code)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
+
     }
 }

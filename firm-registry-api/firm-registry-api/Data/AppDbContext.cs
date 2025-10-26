@@ -12,8 +12,10 @@ namespace firm_registry_api.Data
         public DbSet<CompanyRequest> CompanyRequests { get; set; }
         public DbSet<Founder> Founders { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<ActivityCode> ActivityCodes { get; set; }
+        public DbSet<ActivitySector> ActivitySectors { get; set; }
         public DbSet<ActivityGroup> ActivityGroups { get; set; }
+        public DbSet<ActivityCode> ActivityCodes { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +51,8 @@ namespace firm_registry_api.Data
                 .HasMany(g => g.ActivityCodes)
                 .WithOne(c => c.ActivityGroup)
                 .HasForeignKey(c => c.ActivityGroupId);
+
+            modelBuilder.SeedActivities();
         }
     }
 }

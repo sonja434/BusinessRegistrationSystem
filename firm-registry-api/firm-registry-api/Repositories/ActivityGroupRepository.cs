@@ -1,4 +1,5 @@
 ﻿using firm_registry_api.Data;
+using firm_registry_api.Models;
 using firm_registry_api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,14 @@ namespace firm_registry_api.Repositories
                 .Include(g => g.ActivityCodes)
                 .FirstOrDefaultAsync(g => g.Id == id);
         }
+
+        public async Task<List<ActivityGroup>> GetBySectorIdAsync(int sectorId)
+        {
+            return await _context.ActivityGroups
+                .Where(g => g.ActivitySectorId == sectorId)
+                .OrderBy(g => g.Name)
+                .ToListAsync();
+        }
+
     }
 }
