@@ -1,14 +1,6 @@
-﻿using BCrypt.Net;
-using firm_registry_api.Data;
-using firm_registry_api.DTOs;
-using firm_registry_api.Models;
-using firm_registry_api.Models.Enums;
+﻿using firm_registry_api.DTOs;
 using firm_registry_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace firm_registry_api.Controllers
 {

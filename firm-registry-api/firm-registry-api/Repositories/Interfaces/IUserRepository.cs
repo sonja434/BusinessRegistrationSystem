@@ -9,5 +9,7 @@ namespace firm_registry_api.Repositories.Interfaces
         Task<bool> ExistsByEmailAsync(string email);
         Task AddAsync(User user);
         Task SaveChangesAsync();
+        Task UpdateAsync(User user);
+        Task<User?> GetByIdAsync(int id);
     }
 }

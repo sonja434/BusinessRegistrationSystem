@@ -14,12 +14,17 @@ namespace firm_registry_api
         {
             services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
-            // Repozitorijumi
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IActivityGroupRepository, ActivityGroupRepository>();
+            services.AddScoped<IActivityCodeRepository, ActivityCodeRepository>();
+            services.AddScoped<ICompanyRequestRepository, CompanyRequestRepository>();
 
-            // Servisi
             services.AddScoped<IAuthService, AuthService>();
-
+            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<ICompanyRequestService, CompanyRequestService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IPdfService, PdfService>();
+            services.AddScoped<IUserService, UserService>();
 
             // DbContext
             services.AddDbContext<AppDbContext>(options =>
