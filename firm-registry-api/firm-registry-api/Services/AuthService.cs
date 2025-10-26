@@ -1,65 +1,58 @@
-﻿using firm_registry_api.Data;
+﻿
+using AutoMapper;
 using firm_registry_api.DTOs;
 using firm_registry_api.Models;
+using firm_registry_api.Repositories.Interfaces;
 using firm_registry_api.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace firm_registry_api.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthService(AppDbContext context, IConfiguration config)
+        public AuthService(IUserRepository userRepository, IConfiguration config, IMapper mapper)
         {
-            _context = context;
+            _userRepository = userRepository;
             _config = config;
+            _mapper = mapper;
         }
 
         public async Task<User> RegisterAsync(RegisterDto dto)
         {
-            var user = new User
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                JMBG = dto.JMBG,
-                DateOfBirth = dto.DateOfBirth,
-                Gender = dto.Gender,
-                Residence = dto.Residence,
-                Username = dto.Email,
-                Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Role = Models.Enums.UserRole.User
-            };
+            var user = _mapper.Map<User>(dto);
+
+            user.Username = dto.Email;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            user.Role = Models.Enums.UserRole.User;
 
             if (!user.IsValidJMBG())
-                throw new ArgumentException("JMBG nije validan.");
+                throw new ArgumentException("JMBG is not valid.");
 
             if (!user.IsValidDateOfBirth())
-                throw new ArgumentException("Datum rođenja nije validan.");
+                throw new ArgumentException("Date of birth is not valid.");
 
-            if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
-                throw new ArgumentException("Korisnik sa ovom email adresom već postoji.");
+            if (await _userRepository.ExistsByEmailAsync(dto.Email))
+                throw new ArgumentException("A user with this email address already exists.");
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
 
             return user;
         }
 
-
         public async Task<string> LoginAsync(LoginDto dto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == dto.Username);
+            var user = await _userRepository.GetByUsernameAsync(dto.Username);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Neispravan username ili password");
+                throw new UnauthorizedAccessException("Invalid username or password.");
 
             return GenerateJwtToken(user);
         }
@@ -71,10 +64,10 @@ namespace firm_registry_api.Services
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            };
 
             var token = new JwtSecurityToken(
                 claims: claims,

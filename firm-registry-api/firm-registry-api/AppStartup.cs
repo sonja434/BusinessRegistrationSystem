@@ -1,5 +1,7 @@
 ﻿using firm_registry_api.Data;
 using firm_registry_api.Mappers;
+using firm_registry_api.Repositories;
+using firm_registry_api.Repositories.Interfaces;
 using firm_registry_api.Services;
 using firm_registry_api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +15,9 @@ namespace firm_registry_api
             services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
             // Repozitorijumi
-            // services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             // Servisi
-            // services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IAuthService, AuthService>();
 
 
