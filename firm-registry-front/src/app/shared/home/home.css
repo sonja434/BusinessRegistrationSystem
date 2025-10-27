@@ -24,3 +24,30 @@ text-align: center;
 
 
 .app-footer { display:flex; justify-content:space-between; padding:1rem; background:#f5f7fa; color:#0d47a1; }
+
+.hero-actions button {
+  min-width: 200px;
+  padding: 0.9rem 1.6rem !important;
+  font-size: 1.05rem !important;
+  border-radius: 10px !important;
+  font-weight: 400;
+  transition: 0.25s ease-in-out;
+}
+
+.start-btn {
+  background: white !important;
+  color: #0d47a1 !important;
+}
+
+.start-btn:hover {
+  background: #e3f2fd !important;
+}
+
+.more-btn {
+  border: 2px solid white !important;
+  color: white !important;
+}
+
+.more-btn:hover {
+  background: rgba(255,255,255,0.2) !important;
+}

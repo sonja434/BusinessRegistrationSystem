@@ -1,0 +1,35 @@
+<div class="login-container">
+  <h2>Prijava</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="username" type="email">
+      <mat-error *ngIf="form.controls['username']?.invalid">
+        Unesite validan email
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Lozinka</mat-label>
+      <input matInput formControlName="password" type="password">
+      <mat-error *ngIf="form.controls['password']?.invalid">
+        Lozinka je obavezna
+      </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+      <ng-container *ngIf="!loading">Prijavi se</ng-container>
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+    </button>
+
+    <p class="register-link">
+      Nemaš nalog?
+      <a routerLink="/register">Registruj se</a>
+    </p>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  </form>
+</div>
