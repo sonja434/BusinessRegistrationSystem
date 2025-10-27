@@ -4,6 +4,7 @@ import { About } from './pages/about/about';
 import { Contact } from './pages/contact/contact';
 import { LearnMore } from './pages/learn-more/learn-more';
 import { Login } from './pages/login/login';
+import { Register } from './pages/register/register';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'contact', component: Contact},
   { path: 'learn-more', component: LearnMore},
   { path: 'login', component: Login},
+  { path: 'register', component: Register},
   { path: '**', redirectTo: '' }
 ];

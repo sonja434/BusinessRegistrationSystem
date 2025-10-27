@@ -23,13 +23,12 @@
       <ng-container *ngIf="!loading">Prijavi se</ng-container>
       <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
     </button>
-
-    <p class="register-link">
-      Nemaš nalog?
-      <a routerLink="/register">Registruj se</a>
-    </p>
-
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
   </form>
+
+      <p class="register-link">
+      Nemaš nalog?
+      <a routerLink="/register">Registruj se</a>
+    </p>
 </div>

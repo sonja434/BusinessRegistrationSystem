@@ -8,7 +8,7 @@ interface LoginResponse { token: string; }
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'authToken';
-  private apiUrl = 'https://localhost:7033/api/Auth'; 
+  private apiUrl = 'https://localhost:7033/api/Auth';
   private _auth$ = new BehaviorSubject<boolean>(false);
 
   constructor(
@@ -25,6 +25,10 @@ export class AuthService {
   private hasToken(): boolean {
     if (!this.isBrowser()) return false;
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
   loginUser(data: { username: string; password: string }): Observable<LoginResponse> {
