@@ -1,0 +1,35 @@
+<mat-toolbar class="app-toolbar" color="primary">
+<div class="toolbar-left">
+<img src="/grb.png" class="logo">
+<span class="app-title">eRegistracija</span>
+</div>
+
+
+<span class="spacer"></span>
+
+
+<nav class="desktop-links">
+<a mat-button routerLink="/">Početna</a>
+<a mat-button routerLink="/about">O nama</a>
+<a *ngIf="isLoggedIn" routerLink="/register-company">Registracija firme</a>
+<a mat-button routerLink="/contact">Kontakt</a>
+<button mat-stroked-button *ngIf="!isLoggedIn" routerLink="/login">Prijava</button>
+<button mat-flat-button color="accent" *ngIf="isLoggedIn && !isAdmin" routerLink="/profile">Moj profil</button>
+<button mat-flat-button color="warn" *ngIf="isLoggedIn && isAdmin" routerLink="/admin">Admin panel</button>
+</nav>
+
+
+<mat-menu #appMenu="matMenu">
+<button mat-menu-item routerLink="/">Početna</button>
+<button mat-menu-item routerLink="/about">O nama</button>
+<button *ngIf="isLoggedIn" mat-menu-item routerLink="/register">Registracija firme</button>
+<button mat-menu-item routerLink="/contact">Kontakt</button>
+<button mat-menu-item *ngIf="!isLoggedIn" routerLink="/login">Prijava</button>
+<button mat-menu-item *ngIf="isLoggedIn && isAdmin" routerLink="/admin">Admin panel</button>
+</mat-menu>
+
+
+<button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="appMenu" aria-label="Meni">
+<mat-icon>menu</mat-icon>
+</button>
+</mat-toolbar>
