@@ -76,12 +76,11 @@
       <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
     </button>
 
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  </form>
     <p class="login-link">
       Imaš nalog?
       <a routerLink="/login">Prijavi se</a>
     </p>
-
-    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
-
-  </form>
 </div>

@@ -1,0 +1,60 @@
+<div class="profile-card">
+  <h2>👤 Korisnički profil</h2>
+
+  <form [formGroup]="form" *ngIf="!loading">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ime</mat-label>
+      <input matInput formControlName="firstName" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Prezime</mat-label>
+      <input matInput formControlName="lastName" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>JMBG</mat-label>
+      <input matInput formControlName="jmbg" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Datum rođenja</mat-label>
+      <input matInput formControlName="dateOfBirth" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Adresa</mat-label>
+      <input matInput formControlName="residence" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Korisničko ime</mat-label>
+      <input matInput formControlName="username" [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email">
+      <mat-error *ngIf="form.controls['email']?.invalid">
+        Unesite validan email
+      </mat-error>
+    </mat-form-field>
+
+    <button *ngIf="!editing" mat-stroked-button color="primary" type="button" (click)="enableEdit()">
+      Izmeni profil
+    </button>
+
+    <button *ngIf="editing" mat-flat-button color="primary" type="button" (click)="save()" [disabled]="form.invalid">
+      Sačuvaj
+    </button>
+
+    <button mat-button class="change-pass" type="button" (click)="openPasswordDialog()">
+      Promeni lozinku
+    </button>
+
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  </form>
+</div>
