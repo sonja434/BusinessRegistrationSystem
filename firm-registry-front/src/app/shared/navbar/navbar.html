@@ -9,7 +9,6 @@
   <nav class="desktop-links">
     <button mat-button routerLink="/">Početna</button>
     <button mat-button routerLink="/about">O nama</button>
-    <button mat-button routerLink="/register-company">Registracija firme</button>
     <button mat-button routerLink="/contact">Kontakt</button>
 
     <button mat-stroked-button *ngIf="!isLoggedIn" routerLink="/login">
@@ -36,7 +35,6 @@
   <mat-menu #appMenu="matMenu">
     <button mat-menu-item routerLink="/">Početna</button>
     <button mat-menu-item routerLink="/about">O nama</button>
-    <button mat-menu-item routerLink="/register-company">Registracija firme</button>
     <button mat-menu-item routerLink="/contact">Kontakt</button>
 
     <button *ngIf="!isLoggedIn" mat-menu-item routerLink="/login">Prijava</button>

@@ -1,8 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-contact',
-  imports: [],
+  imports: [
+    MatIcon,
+    CommonModule
+  ],
   templateUrl: './contact.html',
   styleUrl: './contact.css'
 })

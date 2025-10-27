@@ -6,6 +6,7 @@ import { LearnMore } from './pages/learn-more/learn-more';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
+import { ActivityCodes, } from './pages/activity-codes/activity-codes';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'login', component: Login},
   { path: 'register', component: Register},
   { path: 'profile', component: Profile },
+  { path: 'codes', component: ActivityCodes },
 
   { path: '**', redirectTo: '' }
 ];
