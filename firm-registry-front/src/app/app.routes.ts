@@ -7,6 +7,11 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
 import { ActivityCodes, } from './pages/activity-codes/activity-codes';
+import { PrGuide } from './guides/pr-guide/pr-guide';
+import { DooGuide } from './guides/doo-guide/doo-guide';
+import { AdGuide } from './guides/ad-guide/ad-guide';
+import { OdGuide } from './guides/od-guide/od-guide';
+import { KdGuide } from './guides/kd-guide/kd-guide';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -17,6 +22,11 @@ export const routes: Routes = [
   { path: 'register', component: Register},
   { path: 'profile', component: Profile },
   { path: 'codes', component: ActivityCodes },
+  { path: 'pr', component: PrGuide },
+  { path: 'doo', component: DooGuide },
+  { path: 'ad', component: AdGuide },
+  { path: 'od', component: OdGuide },
+  { path: 'kd', component: KdGuide },
 
   { path: '**', redirectTo: '' }
 ];

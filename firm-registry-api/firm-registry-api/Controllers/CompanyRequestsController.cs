@@ -22,7 +22,7 @@ namespace firm_registry_api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateRequest([FromBody] CompanyRequestDto dto)
+        public async Task<IActionResult> CreateRequest([FromForm] CompanyRequestDto dto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var request = await _service.CreateRequestAsync(dto, userId);
