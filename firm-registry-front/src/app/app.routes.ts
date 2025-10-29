@@ -15,6 +15,8 @@ import { KdGuide } from './guides/kd-guide/kd-guide';
 import { CompanyRegistration } from './pages/company-registration/company-registration';
 import { CompanyRequestsUser } from './pages/company-requests-user/company-requests-user';
 import { CompanyRequestDetail } from './pages/company-requests-detail/company-requests-detail';
+import { CompanyRequestsAdmin } from './pages/company-requests-admin/company-requests-admin';
+import { CompanyRequestReview } from './pages/company-request-review/company-request-review';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -33,6 +35,7 @@ export const routes: Routes = [
   { path: 'register-firm', component: CompanyRegistration },
   { path: 'user-requests', component: CompanyRequestsUser },
   { path: 'request-details/:id', component: CompanyRequestDetail },
-
+  { path: 'admin-requests', component: CompanyRequestsAdmin },
+  { path: 'request-review/:id', component: CompanyRequestReview },
   { path: '**', redirectTo: '' }
 ];

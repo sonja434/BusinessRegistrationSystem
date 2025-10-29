@@ -21,11 +21,12 @@ import { AuthService } from '../../services/auth.service';
 })
 export class Home {
   isLoggedIn = false;
+  isAdmin = false;
 
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();
-
+    this.isAdmin = this.authService.getUserRole() === 'Admin';
   }
 }

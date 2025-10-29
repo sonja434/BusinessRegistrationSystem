@@ -1,0 +1,83 @@
+.requests-container {
+  padding: 2rem;
+  background: #faf9ff;
+  border-radius: 12px;
+}
+
+h2 {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: 600;
+  background: #f4f3fb;
+}
+
+td, th {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background: #f9f9ff;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.status-badge.pending {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-badge.approved {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-badge.revision {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-badge.cancelled {
+  background: #fce4ec;
+  color: #ad1457;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.loading p {
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.no-data {
+  text-align: center;
+  margin-top: 2rem;
+  font-style: italic;
+}

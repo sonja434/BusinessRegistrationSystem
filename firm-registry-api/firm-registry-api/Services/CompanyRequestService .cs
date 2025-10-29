@@ -95,13 +95,13 @@ namespace firm_registry_api.Services
 
             request.Status = dto.Status;
             request.AdminNotes = dto.AdminNotes;
-            request.UpdatedAt = DateTime.Now;
+            request.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(request);
             await _repository.SaveChangesAsync();
 
             var emailBody = $"Vaš zahtev za registraciju firme '{request.CompanyName}' je obrađen.\n" +
-                            $"Status: {request.Status}\n" +
+                            $"Status: {request.Status.ToString()}\n" +
                             $"Napomena od admina: {request.AdminNotes}";
 
             await _emailService.SendEmailAsync(request.User.Email, "Vaš zahtev je obrađen", emailBody);
