@@ -96,7 +96,7 @@ namespace firm_registry_api.Controllers
 
         [HttpPut("user/{id}")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateRequestByUser(int id, [FromBody] UserUpdateCompanyRequestDto dto)
+        public async Task<IActionResult> UpdateRequestByUser(int id, [FromForm] UserUpdateCompanyRequestDto dto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var request = await _service.UpdateRequestByUserAsync(id, dto, userId);

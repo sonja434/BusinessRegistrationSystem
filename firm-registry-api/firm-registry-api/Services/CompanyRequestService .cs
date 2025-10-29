@@ -80,7 +80,7 @@ namespace firm_registry_api.Services
                 }
             }
 
-            request.UpdatedAt = DateTime.Now;
+            request.UpdatedAt = DateTime.UtcNow;
             await _repository.UpdateAsync(request);
             await _repository.SaveChangesAsync();
             return request;

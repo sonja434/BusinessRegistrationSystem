@@ -13,6 +13,8 @@ import { AdGuide } from './guides/ad-guide/ad-guide';
 import { OdGuide } from './guides/od-guide/od-guide';
 import { KdGuide } from './guides/kd-guide/kd-guide';
 import { CompanyRegistration } from './pages/company-registration/company-registration';
+import { CompanyRequestsUser } from './pages/company-requests-user/company-requests-user';
+import { CompanyRequestDetail } from './pages/company-requests-detail/company-requests-detail';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -29,6 +31,8 @@ export const routes: Routes = [
   { path: 'od', component: OdGuide },
   { path: 'kd', component: KdGuide },
   { path: 'register-firm', component: CompanyRegistration },
+  { path: 'user-requests', component: CompanyRequestsUser },
+  { path: 'request-details/:id', component: CompanyRequestDetail },
 
   { path: '**', redirectTo: '' }
 ];

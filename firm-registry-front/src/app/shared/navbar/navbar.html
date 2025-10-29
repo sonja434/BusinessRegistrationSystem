@@ -19,6 +19,10 @@
       Moj profil
     </button>
 
+    <button mat-button color="accent" *ngIf="isLoggedIn" routerLink="/user-requests">
+      Moji zahtevi
+    </button>
+
     <button mat-button color="warn" *ngIf="isLoggedIn && isAdmin" routerLink="/admin">
       Admin panel
     </button>
@@ -40,6 +44,7 @@
     <button *ngIf="!isLoggedIn" mat-menu-item routerLink="/login">Prijava</button>
     <button *ngIf="isLoggedIn" mat-menu-item routerLink="/profile">Moj profil</button>
     <button *ngIf="isLoggedIn && isAdmin" mat-menu-item routerLink="/admin">Admin panel</button>
+    <button *ngIf="isLoggedIn && !isAdmin" mat-menu-item routerLink="/user-requests">Moji zahtevi</button>
     <button *ngIf="isLoggedIn" mat-menu-item (click)="logout()" routerLink="/">Odjava</button>
   </mat-menu>
 </mat-toolbar>
