@@ -36,6 +36,7 @@ export class CompanyRequestDetail implements OnInit {
   newDocuments: File[] = [];
   loading = false;
   id!: number;
+  existingDocuments: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +54,7 @@ export class CompanyRequestDetail implements OnInit {
     this.service.getRequest(this.id).subscribe({
       next: (res) => {
         this.request = res;
+        this.existingDocuments = [...(this.request.documents || [])];
         this.collectMembers();
         this.loading = false;
       },
@@ -103,7 +105,7 @@ export class CompanyRequestDetail implements OnInit {
   }
 
   removeDocument(doc: string) {
-    this.request.documents = this.request.documents.filter((d: string) => d !== doc);
+    this.existingDocuments = this.existingDocuments.filter(d => d !== doc);
   }
 
   removeNewDocument(file: File) {
@@ -112,18 +114,27 @@ export class CompanyRequestDetail implements OnInit {
 
   updateRequest() {
     const formData = new FormData();
-    this.newDocuments.forEach(file => formData.append('DocumentFiles', file));
-    formData.append('ExistingDocuments', JSON.stringify(this.request.documents));
+
+    this.existingDocuments.forEach(doc =>
+      formData.append('ExistingDocuments', doc)
+    );
+
+    this.newDocuments.forEach(file =>
+      formData.append('DocumentFiles', file)
+    );
+
     formData.append('CancelRequest', 'false');
 
     this.service.updateRequestByUser(this.id, formData).subscribe({
       next: () => {
         this.snackBar.open('Zahtev uspešno ažuriran', 'Zatvori', { duration: 3000 });
         this.loadRequest();
+        this.newDocuments = [];
       },
       error: () => this.snackBar.open('Greška pri ažuriranju', 'Zatvori', { duration: 3000 })
     });
   }
+
 
   cancelRequest() {
     const formData = new FormData();
@@ -168,7 +179,7 @@ export class CompanyRequestDetail implements OnInit {
   }
 
   isCancelled(): boolean {
-    return this.request?.status === 1 || this.request?.status === 4;
+    return this.request?.status === 1 || this.request?.status === 2 || this.request?.status === 4;
   }
 
 }

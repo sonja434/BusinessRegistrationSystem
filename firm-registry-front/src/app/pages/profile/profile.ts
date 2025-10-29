@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialog } from '../password.dialog/password.dialog';
@@ -21,7 +20,7 @@ import { PasswordDialog } from '../password.dialog/password.dialog';
     MatButtonModule
 ],
   templateUrl: './profile.html',
-  styleUrls: ['./profile.css'] // ✅ FIX
+  styleUrls: ['./profile.css'] 
 })
 export class Profile {
   form!: FormGroup;
@@ -32,7 +31,6 @@ export class Profile {
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
-    private router: Router,
     private dialog: MatDialog
   ) { }
 

@@ -10,7 +10,7 @@ namespace firm_registry_api.DTOs
 
         public string LastName { get; set; }
 
-        [StringLength(13, MinimumLength = 13, ErrorMessage = "JMBG mora imati 13 cifara.")]
+        [StringLength(13, MinimumLength = 13, ErrorMessage = "JMBG must have 13 digits.")]
         public string JMBG { get; set; }
 
         public DateTime DateOfBirth { get; set; }

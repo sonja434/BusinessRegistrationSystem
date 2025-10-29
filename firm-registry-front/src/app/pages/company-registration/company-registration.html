@@ -397,17 +397,17 @@
             <mat-card-content>
                 <h3>Opšti podaci</h3>
                 <mat-list role="list">
-                    <mat-list-item role="listitem">Naziv: **{{ generalForm.value.companyName }}**</mat-list-item>
+                    <mat-list-item role="listitem">Naziv: {{ generalForm.value.companyName }}</mat-list-item>
                     <mat-list-item role="listitem">
-                        Šifra delatnosti: **{{ generalForm.value.activityCodeId }}** <span *ngIf="getCodeDescription()">({{ getCodeDescription() }})</span>
+                        Šifra delatnosti:<span *ngIf="getCodeDescription()">{{ getCodeDescription() }}</span>
                     </mat-list-item>
-                    <mat-list-item role="listitem">Tip firme: **{{ typeForm.value.companyType }}**</mat-list-item>
+                    <mat-list-item role="listitem">Tip firme: {{ typeForm.value.companyType }}</mat-list-item>
                 </mat-list>
                 
                 <h4>Adresa sedišta</h4>
                 <mat-list role="list">
-                    <mat-list-item role="listitem">Ulica i broj: **{{ generalForm.value.address.street }} {{ generalForm.value.address.number }}**</mat-list-item>
-                    <mat-list-item role="listitem">Grad/Država: **{{ generalForm.value.address.city }}, {{ generalForm.value.address.country }}**</mat-list-item>
+                    <mat-list-item role="listitem">Ulica i broj: {{ generalForm.value.address.street }} {{ generalForm.value.address.number }}</mat-list-item>
+                    <mat-list-item role="listitem">Grad/Država: {{ generalForm.value.address.city }}, {{ generalForm.value.address.country }}</mat-list-item>
                 </mat-list>
                 
                 <mat-divider></mat-divider>
@@ -416,18 +416,18 @@
                 
                 <div *ngIf="typeForm.value.companyType === 'DOO' || typeForm.value.companyType === 'AD'">
                     <mat-list>
-                        <mat-list-item>Osnovni kapital: **{{ specificForm.value.shareCapital | number: '1.2-2' }}**</mat-list-item>
+                        <mat-list-item>Osnovni kapital: {{ specificForm.value.shareCapital | number: '1.2-2' }}</mat-list-item>
                     </mat-list>
                 </div>
 
                 <div *ngIf="typeForm.value.companyType === 'DOO'">
                     <mat-list>
-                        <mat-list-item>Direktor: **{{ specificForm.value.directorFullName }}**</mat-list-item>
+                        <mat-list-item>Direktor: {{ specificForm.value.directorFullName }}</mat-list-item>
                     </mat-list>
                     <h4>Osnivači</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let f of founders.value; let i = index">
-                            {{ i + 1 }}. **{{ f.firstName }} {{ f.lastName }}** (JMBG: {{ f.jmbg }}, Udeo: {{ f.share }}%)
+                            {{ i + 1 }}. {{ f.firstName }} {{ f.lastName }} (JMBG: {{ f.jmbg }}, Udeo: {{ f.share }}%)
                             <br> Adresa: {{ f.address.street }} {{ f.address.number }}, {{ f.address.city }}
                         </mat-list-item>
                     </mat-list>
@@ -437,14 +437,14 @@
                     <h4>Akcionari</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let s of shareholders.value; let i = index">
-                            {{ i + 1 }}. **{{ s.firstName }} {{ s.lastName }}** (JMBG: {{ s.jmbg }}, Udeo: {{ s.share }}%)
+                            {{ i + 1 }}. {{ s.firstName }} {{ s.lastName }} (JMBG: {{ s.jmbg }}, Udeo: {{ s.share }}%)
                             <br> Adresa: {{ s.address.street }} {{ s.address.number }}, {{ s.address.city }}
                         </mat-list-item>
                     </mat-list>
                     <h4>Odbor direktora</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let b of boardMembers.value; let i = index">
-                            {{ i + 1 }}. **{{ b }}**
+                            {{ i + 1 }}. {{ b }}
                         </mat-list-item>
                     </mat-list>
                 </div>
@@ -452,9 +452,9 @@
                 <div *ngIf="typeForm.value.companyType === 'PR'">
                     <h4>Vlasnik</h4>
                     <mat-list>
-                        <mat-list-item>Ime i Prezime: **{{ specificForm.value.owner.firstName }} {{ specificForm.value.owner.lastName }}**</mat-list-item>
-                        <mat-list-item>JMBG: **{{ specificForm.value.owner.jmbg }}**</mat-list-item>
-                        <mat-list-item>Adresa: **{{ specificForm.value.owner.address.street }} {{ specificForm.value.owner.address.number }}, {{ specificForm.value.owner.address.city }}**</mat-list-item>
+                        <mat-list-item>Ime i Prezime: {{ specificForm.value.owner.firstName }} {{ specificForm.value.owner.lastName }}</mat-list-item>
+                        <mat-list-item>JMBG: {{ specificForm.value.owner.jmbg }}</mat-list-item>
+                        <mat-list-item>Adresa: {{ specificForm.value.owner.address.street }} {{ specificForm.value.owner.address.number }}, {{ specificForm.value.owner.address.city }}</mat-list-item>
                     </mat-list>
                 </div>
                 
@@ -462,7 +462,7 @@
                     <h4>Partneri</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let p of partners.value; let i = index">
-                            {{ i + 1 }}. **{{ p.firstName }} {{ p.lastName }}** (JMBG: {{ p.jmbg }})
+                            {{ i + 1 }}. {{ p.firstName }} {{ p.lastName }} (JMBG: {{ p.jmbg }})
                             <br> Adresa: {{ p.address.street }} {{ p.address.number }}, {{ p.address.city }}
                         </mat-list-item>
                     </mat-list>
@@ -472,14 +472,14 @@
                     <h4>Komplementari</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let g of generalPartners.value; let i = index">
-                            {{ i + 1 }}. **{{ g.firstName }} {{ g.lastName }}** (Udeo: {{ g.share }}%)
+                            {{ i + 1 }}. {{ g.firstName }} {{ g.lastName }} (Udeo: {{ g.share }}%)
                             <br> Adresa: {{ g.address.street }} {{ g.address.number }}, {{ g.address.city }}
                         </mat-list-item>
                     </mat-list>
                     <h4>Komanditori</h4>
                     <mat-list>
                         <mat-list-item *ngFor="let l of limitedPartners.value; let i = index">
-                            {{ i + 1 }}. **{{ l.firstName }} {{ l.lastName }}** (Udeo: {{ l.share }}%)
+                            {{ i + 1 }}. {{ l.firstName }} {{ l.lastName }} (Udeo: {{ l.share }}%)
                             <br> Adresa: {{ l.address.street }} {{ l.address.number }}, {{ l.address.city }}
                         </mat-list-item>
                     </mat-list>

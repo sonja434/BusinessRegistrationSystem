@@ -66,9 +66,19 @@ namespace firm_registry_api.Services
             if (dto.CancelRequest)
                 request.Status = RequestStatus.Cancelled;
 
+            var existing = dto.ExistingDocuments ?? new List<string>();
+            var toDelete = request.Documents.Where(d => !existing.Contains(d)).ToList();
+
+            foreach (var fileName in toDelete)
+            {
+                var path = Path.Combine("Uploads", fileName);
+                if (File.Exists(path))
+                    File.Delete(path);
+                request.Documents.Remove(fileName);
+            }
+
             if (dto.DocumentFiles != null && dto.DocumentFiles.Any())
             {
-                ValidateFiles(dto.DocumentFiles);
                 foreach (var file in dto.DocumentFiles)
                 {
                     var fileName = $"{Guid.NewGuid()}_{file.FileName}";
@@ -83,6 +93,7 @@ namespace firm_registry_api.Services
             request.UpdatedAt = DateTime.UtcNow;
             await _repository.UpdateAsync(request);
             await _repository.SaveChangesAsync();
+
             return request;
         }
 
@@ -139,22 +150,5 @@ namespace firm_registry_api.Services
 
             return await _pdfService.GenerateCompanyRequestPdfAsync(request);
         }
-
-        private void ValidateFiles(List<IFormFile> files)
-        {
-            var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".png" };
-            long maxFileSize = 5 * 1024 * 1024;
-
-            foreach (var file in files)
-            {
-                var extension = Path.GetExtension(file.FileName).ToLower();
-                if (!allowedExtensions.Contains(extension))
-                    throw new InvalidOperationException($"File type '{extension}' is not allowed.");
-
-                if (file.Length > maxFileSize)
-                    throw new InvalidOperationException($"File '{file.FileName}' exceeds maximum size of 5 MB.");
-            }
-        }
-
     }
 }

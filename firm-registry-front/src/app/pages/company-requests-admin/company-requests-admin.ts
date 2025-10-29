@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-requests-admin',
-  standalone: true, // Dodato radi ispravnosti u novim Angular projektima
+  standalone: true, 
   imports: [
     CommonModule,
     MatTableModule,

@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using firm_registry_api.DTOs;
-using firm_registry_api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace firm_registry_api.Controllers
 {
@@ -25,10 +23,9 @@ namespace firm_registry_api.Controllers
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateRequest(
-    [FromForm] string request,
-    IFormFileCollection DocumentFiles)
+            [FromForm] string request,
+            IFormFileCollection DocumentFiles)
         {
-            // Opcije za deserializaciju (CamelCase i CaseInsensitive)
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -44,7 +41,7 @@ namespace firm_registry_api.Controllers
 
                 if (!root.TryGetProperty("Type", out var typeElement) || typeElement.ValueKind != JsonValueKind.Number)
                 {
-                    return BadRequest("JSON zahtev ne sadrži validan numerički diskriminator 'Type'.");
+                    return BadRequest("JSON don't have valid discriminator. 'Type'.");
                 }
 
                 var typeId = typeElement.GetInt32();
@@ -67,17 +64,17 @@ namespace firm_registry_api.Controllers
                         dto = JsonSerializer.Deserialize<LimitedPartnershipRequestDto>(request, options);
                         break;
                     default:
-                        return BadRequest("Nepoznat tip firme (Type) u zahtevu.");
+                        return BadRequest("Not known type od compnay.");
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest($"Greška pri parsiranju JSON zahteva: {ex.Message}");
+                return BadRequest($"Invalid aprsing of JSON request: {ex.Message}");
             }
 
             if (dto == null)
             {
-                return BadRequest("Podaci zahteva nisu validni.");
+                return BadRequest("Not valid request.");
             }
 
 

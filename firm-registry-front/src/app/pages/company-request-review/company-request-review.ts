@@ -40,7 +40,6 @@ export class CompanyRequestReview implements OnInit {
   loading = false;
   id!: number;
 
-  // Admin-specific fields
   newStatus: number | null = null;
   adminNotes: string = '';
 

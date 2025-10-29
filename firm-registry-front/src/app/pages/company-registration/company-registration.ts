@@ -23,17 +23,15 @@ import { CompanyRequestService } from '../../services/company-request.service';
 import { ActivityCodesService } from '../../services/activity-codes.service';
 import { Router } from '@angular/router';
 
-// --- INTERFEJSI ZA TIPSKU SIGURNOST ---
 interface Address { street: string; number: number | null; city: string; country: string; }
 interface CompanyRequest {
   companyName: string;
   activityCodeId: number;
   address: Address;
-  type: string; // Polje koje se koristi za polimorfizam (npr. 'PR', 'DOO')
+  type: string; 
   [key: string]: any; 
 }
 
-// Novi interfejsi za Šifre delatnosti
 interface ActivitySector { id: number; name: string; }
 interface ActivityGroup { id: number; name: string; }
 interface ActivityCode { id: number; code: string; description: string; }
@@ -73,7 +71,6 @@ export class CompanyRegistration implements OnInit {
   selectedFiles: File[] = [];
   isSubmitting = false;
 
-  // 🔴 KLJUČNA IZMENA 1: MAPA ZA KONVERZIJU TIPA FIRME U NUMERIČKU VREDNOST (INT)
   private CompanyTypeEnumMap: { [key: string]: number } = {
     'PR': 0,
     'DOO': 1,
@@ -82,12 +79,10 @@ export class CompanyRegistration implements OnInit {
     'KD': 4,
   };
 
-  // --- NOVE VARIJABLE ZA KASKADNI IZBOR DELATNOSTI ---
   sectors: ActivitySector[] = [];
   groups: ActivityGroup[] = [];
   codes: ActivityCode[] = [];
   private codeDescriptionMap = new Map<number, string>();
-  // ---------------------------------------------------
 
   constructor(
     private fb: FormBuilder, 
@@ -99,7 +94,6 @@ export class CompanyRegistration implements OnInit {
   ngOnInit() {
     this.generalForm = this.fb.group({
       companyName: ['', Validators.required],
-      // Kontrole za kaskadni izbor
       activitySectorId: [null, Validators.required], 
       activityGroupId: [{ value: null, disabled: true }, Validators.required],
       activityCodeId: [{ value: null, disabled: true }, Validators.required], 
@@ -118,23 +112,17 @@ export class CompanyRegistration implements OnInit {
     this.documentForm = this.fb.group({}); 
     this.reviewForm = this.fb.group({}); 
 
-    // Reagovanje na promenu tipa firme
     this.typeForm.get('companyType')!.valueChanges.subscribe(type => {
       this.buildSpecificForm(type);
       this.specificForm.markAllAsTouched();
     });
 
-    // Inicijalna izgradnja forme (za PR)
     this.buildSpecificForm(this.typeForm.value.companyType);
 
-    // --- LOGIKA ZA KASKADNI IZBOR DELATNOSTI ---
     this.loadSectors();
     this.setupActivityCodeListeners();
   }
 
-  // ------------------------------------------
-  // ## LOGIKA ZA NKD (ŠIFRE DELATNOSTI)
-  // ------------------------------------------
 
   loadSectors() {
     this.activityService.getSectors().subscribe({
@@ -159,7 +147,6 @@ export class CompanyRegistration implements OnInit {
   }
 
   setupActivityCodeListeners() {
-    // 1. Osluškivanje promene Sektora
     this.generalForm.get('activitySectorId')?.valueChanges.subscribe(sectorId => {
       this.groups = [];
       this.codes = [];
@@ -175,7 +162,6 @@ export class CompanyRegistration implements OnInit {
       this.generalForm.get('activityCodeId')?.disable({ emitEvent: false });
     });
 
-    // 2. Osluškivanje promene Grupe
     this.generalForm.get('activityGroupId')?.valueChanges.subscribe(groupId => {
       this.codes = [];
       this.generalForm.get('activityCodeId')?.setValue(null, { emitEvent: false });
@@ -220,10 +206,6 @@ export class CompanyRegistration implements OnInit {
     }
     return this.codeDescriptionMap.get(codeId) || '';
   }
-
-  // ------------------------------------------
-  // ## LOGIKA ZA FORME (Osnivači, Partneri, Validacija udela)
-  // ------------------------------------------
 
   private buildFounder(includeShare: boolean = false): FormGroup {
     const group: { [key: string]: any } = {
@@ -319,7 +301,6 @@ export class CompanyRegistration implements OnInit {
     }
   }
 
-  // --- Getteri za FormArray ---
   get founders() { return this.specificForm.get('founders') as FormArray; }
   get shareholders() { return this.specificForm.get('shareholders') as FormArray; }
   get partners() { return this.specificForm.get('partners') as FormArray; }
@@ -327,7 +308,6 @@ export class CompanyRegistration implements OnInit {
   get limitedPartners() { return this.specificForm.get('limitedPartners') as FormArray; }
   get boardMembers() { return this.specificForm.get('boardOfDirectors') as FormArray; }
 
-  // --- Metode za dodavanje/brisanje članova FormArray ---
   addFounder() { this.founders.push(this.buildFounder(true)); }
   removeFounder(i: number) { this.founders.removeAt(i); }
 
@@ -346,7 +326,6 @@ export class CompanyRegistration implements OnInit {
   addBoardMember() { this.boardMembers.push(this.fb.control('', Validators.required)); }
   removeBoardMember(i: number) { this.boardMembers.removeAt(i); }
 
-  // --- Logika za fajlove ---
   onFilesSelected(files: FileList | null) {
     if (!files) return;
     Array.from(files).forEach(f => {
@@ -357,11 +336,6 @@ export class CompanyRegistration implements OnInit {
     }
   }
   removeFile(i: number) { this.selectedFiles.splice(i, 1); }
-
-  
-  // ------------------------------------------
-  // ## GLAVNA METODA ZA SLANJE (FINALNO KORIGOVANO)
-  // ------------------------------------------
 
   submitRequest() {
     this.generalForm.markAllAsTouched();
@@ -376,36 +350,25 @@ export class CompanyRegistration implements OnInit {
       return;
     }
 
-    // 1. KREIRANJE KOMPLETNOG REQUEST OBJEKTA (u camelCase formatu)
     const rawRequestData: CompanyRequest = {
-        // Koristimo getRawValue() za preuzimanje vrednosti iz disabled kontrola
         ...this.generalForm.getRawValue(), 
         ...this.specificForm.value,
-        type: this.typeForm.value.companyType // Ključ za polimorfizam (npr. "PR")
+        type: this.typeForm.value.companyType 
     } as CompanyRequest;
     
-    // Uklanjamo pomoćna polja (koja služe samo za kaskadni izbor na frontu)
     delete rawRequestData['activitySectorId'];
     delete rawRequestData['activityGroupId'];
 
-    
-    // 🔴 KLJUČNA IZMENA 2: KONVERZIJA TIPA FIRME IZ STRINGA U NUMERIČKI ENUM.
-    // C# DTO očekuje PascalCase 'Type' sa int vrednošću (0, 1, 2...)
     const requestDataForBackend = {
         ...rawRequestData,
-        // ⚠️ Koristimo mapu za konverziju stringa u broj!
         "Type": this.CompanyTypeEnumMap[rawRequestData.type] 
     };
     
-    // Uklanjamo originalni camelCase 'type' string da ne bi došlo do konflikta
     delete (requestDataForBackend as any)['type'];
 
-    // 2. PAKOVANJE U FORMDATA (za slanje fajlova i JSON-a)
     const data = new FormData();
-    // Sada šaljemo JSON string sa {"Type": 0} ili {"Type": 1}, što je ono što C# očekuje.
     data.append('request', JSON.stringify(requestDataForBackend)); 
     
-    // 3. Dodavanje fajlova pod ključem 'DocumentFiles'
     this.selectedFiles.forEach(f => data.append('DocumentFiles', f, f.name)); 
 
     this.isSubmitting = true;
@@ -414,11 +377,9 @@ export class CompanyRegistration implements OnInit {
         console.log('Uspešno poslato:', res);
         alert('Zahtev je uspešno poslat! 🎉');
         this.router.navigate(['/']);
-        // Resetovanje stanja nakon uspešnog slanja
         this.stepper.reset();
         this.selectedFiles = [];
         this.isSubmitting = false;
-        // Ponavno postavljanje inicijalne forme nakon resetovanja
         this.buildSpecificForm(this.typeForm.value.companyType); 
       },
       error: err => {

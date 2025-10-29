@@ -14,7 +14,6 @@
 
     <mat-divider></mat-divider>
 
-    <!-- 📍 Adresa -->
     <section>
         <h3><mat-icon>location_on</mat-icon> Adresa</h3>
         <p>{{ request.address.street }} {{ request.address.number }}, {{ request.address.city }}, {{
@@ -23,7 +22,6 @@
 
     <mat-divider></mat-divider>
 
-    <!-- 👥 Osnivači / Članovi -->
     <section *ngIf="allMembers.length">
         <h3><mat-icon>group</mat-icon> Osnivači / Članovi</h3>
 
@@ -39,7 +37,6 @@
 
     <mat-divider></mat-divider>
 
-    <!-- 📁 Dokumenta -->
     <section>
         <h3><mat-icon>folder</mat-icon> Dokumenta</h3>
 

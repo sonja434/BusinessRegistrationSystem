@@ -3,34 +3,28 @@
     <mat-icon>assignment</mat-icon> Pregled svih zahteva
   </h2>
 
-  <!-- Loading indikator -->
   <div *ngIf="loading" class="loading">
     <mat-spinner diameter="40"></mat-spinner>
     <p>Učitavanje zahteva...</p>
   </div>
 
-  <!-- Tabela -->
   <table mat-table [dataSource]="requests" class="mat-elevation-z2" *ngIf="!loading && requests.length">
 
-    <!-- ID -->
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>ID</th>
       <td mat-cell *matCellDef="let r">{{ r.id }}</td>
     </ng-container>
 
-    <!-- Naziv firme -->
     <ng-container matColumnDef="companyName">
       <th mat-header-cell *matHeaderCellDef>Naziv firme</th>
       <td mat-cell *matCellDef="let r">{{ r.companyName }}</td>
     </ng-container>
 
-    <!-- Tip -->
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef>Tip</th>
       <td mat-cell *matCellDef="let r">{{ r.type }}</td>
     </ng-container>
 
-    <!-- Status -->
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>Status</th>
       <td mat-cell *matCellDef="let r">
@@ -47,19 +41,16 @@
       </td>
     </ng-container>
 
-    <!-- User ID -->
     <ng-container matColumnDef="userId">
       <th mat-header-cell *matHeaderCellDef>Korisnik ID</th>
       <td mat-cell *matCellDef="let r">{{ r.userId }}</td>
     </ng-container>
 
-    <!-- Datum -->
     <ng-container matColumnDef="createdAt">
       <th mat-header-cell *matHeaderCellDef>Kreiran</th>
       <td mat-cell *matCellDef="let r">{{ r.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
     </ng-container>
 
-    <!-- Akcije -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Akcije</th>
       <td mat-cell *matCellDef="let r">
@@ -73,7 +64,6 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <!-- Nema podataka -->
   <div *ngIf="!loading && !requests.length" class="no-data">
     Nema zahteva za prikaz.
   </div>

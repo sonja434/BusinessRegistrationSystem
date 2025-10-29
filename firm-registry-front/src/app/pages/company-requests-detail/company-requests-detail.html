@@ -13,7 +13,6 @@
 
   <mat-divider></mat-divider>
 
-  <!-- 📍 Adresa -->
   <section>
     <h3><mat-icon>location_on</mat-icon> Adresa</h3>
     <p>{{ request.address.street }} {{ request.address.number }}, {{ request.address.city }}, {{ request.address.country
@@ -22,7 +21,6 @@
 
   <mat-divider></mat-divider>
 
-  <!-- 👥 Osnivači / Članovi -->
   <section *ngIf="allMembers.length">
     <h3><mat-icon>group</mat-icon> Osnivači / Članovi</h3>
 
@@ -38,12 +36,11 @@
 
   <mat-divider></mat-divider>
 
-  <!-- 📁 Dokumenta -->
   <section>
     <h3><mat-icon>folder</mat-icon> Dokumenta</h3>
 
-    <div class="docs" *ngIf="request.documents?.length; else noDocs">
-      <div *ngFor="let doc of request.documents" class="doc-item">
+    <div class="docs" *ngIf="existingDocuments.length; else noDocs">
+      <div *ngFor="let doc of existingDocuments" class="doc-item">
         <mat-icon color="primary">insert_drive_file</mat-icon>
         <span class="doc-name" (click)="downloadDocument(doc)" matTooltip="Preuzmi dokument">
           {{ doc }}
@@ -51,6 +48,19 @@
 
         <div class="doc-actions">
           <button mat-icon-button color="warn" (click)="removeDocument(doc)" matTooltip="Ukloni" *ngIf="!isCancelled()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="newDocuments.length && !isCancelled()" class="docs">
+      <h4>📎 Novi dokumenti za slanje</h4>
+      <div *ngFor="let file of newDocuments" class="doc-item">
+        <mat-icon color="primary">attach_file</mat-icon>
+        <span class="doc-name">{{ file.name }}</span>
+        <div class="doc-actions">
+          <button mat-icon-button color="warn" (click)="removeNewDocument(file)" matTooltip="Ukloni">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -70,15 +80,14 @@
   </section>
 
 
+
   <mat-divider></mat-divider>
 
-  <!-- 🗒️ Napomena -->
   <section>
     <h3><mat-icon>info</mat-icon> Napomena administratora</h3>
     <p>{{ request.adminNotes || 'Nema napomena.' }}</p>
   </section>
 
-  <!-- Dugmad -->
   <div class="actions">
     <button mat-stroked-button color="primary" (click)="updateRequest()" [disabled]="isCancelled()">
       💾 Sačuvaj izmene
