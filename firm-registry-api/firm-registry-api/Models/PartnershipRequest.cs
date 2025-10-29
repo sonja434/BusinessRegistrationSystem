@@ -1,7 +1,9 @@
-﻿namespace firm_registry_api.Models
+﻿using firm_registry_api.Models.firm_registry_api.Models;
+
+namespace firm_registry_api.Models
 {
     public class PartnershipRequest : CompanyRequest
     {
-        public List<Founder> Partners { get; set; } = new List<Founder>();
+        public List<Partner> Partners { get; set; } = new List<Partner>();
     }
 }

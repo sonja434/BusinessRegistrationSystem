@@ -14,6 +14,7 @@ namespace firm_registry_api.Services
         private readonly IEmailService _emailService;
         private readonly IPdfService _pdfService;
 
+
         public CompanyRequestService(ICompanyRequestRepository repository, IMapper mapper, IEmailService emailService, IPdfService pdfService)
         {
             _repository = repository;
@@ -24,28 +25,31 @@ namespace firm_registry_api.Services
 
         public async Task<CompanyRequest> CreateRequestAsync(CompanyRequestDto dto, int userId)
         {
+
             var entity = _mapper.Map<CompanyRequest>(dto);
             entity.UserId = userId;
             entity.Status = RequestStatus.Pending;
-            entity.CreatedAt = DateTime.Now;
-            entity.UpdatedAt = DateTime.Now;
+            entity.CreatedAt = DateTime.UtcNow;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            if (entity.Documents == null) entity.Documents = new List<string>();
 
             if (dto.DocumentFiles != null && dto.DocumentFiles.Any())
             {
-                ValidateFiles(dto.DocumentFiles);
+                Directory.CreateDirectory("Uploads");
                 foreach (var file in dto.DocumentFiles)
                 {
                     var fileName = $"{Guid.NewGuid()}_{file.FileName}";
                     var path = Path.Combine("Uploads", fileName);
-                    Directory.CreateDirectory("Uploads"); 
                     using var stream = new FileStream(path, FileMode.Create);
                     await file.CopyToAsync(stream);
-                    entity.Documents.Add(fileName); 
+                    entity.Documents.Add(fileName);
                 }
             }
 
             await _repository.AddAsync(entity);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAsync(); 
+
             return entity;
         }
 

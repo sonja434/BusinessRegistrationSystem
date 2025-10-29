@@ -2,6 +2,6 @@
 {
     public class EntrepreneurRequest : CompanyRequest
     {
-        public Founder Owner { get; set; } = new Founder();
+        public Owner Owner { get; set; }
     }
 }

@@ -3,11 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace firm_registry_api.DTOs
 {
-    [JsonDerivedType(typeof(EntrepreneurRequestDto), nameof(CompanyType.PR))]
-    [JsonDerivedType(typeof(LimitedCompanyRequestDto), nameof(CompanyType.DOO))]
-    [JsonDerivedType(typeof(JointStockCompanyRequestDto), nameof(CompanyType.AD))]
-    [JsonDerivedType(typeof(PartnershipRequestDto), nameof(CompanyType.OD))]
-    [JsonDerivedType(typeof(LimitedPartnershipRequestDto), nameof(CompanyType.KD))]
     public abstract class CompanyRequestDto
     {
         public string CompanyName { get; set; }

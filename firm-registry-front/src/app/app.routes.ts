@@ -12,6 +12,7 @@ import { DooGuide } from './guides/doo-guide/doo-guide';
 import { AdGuide } from './guides/ad-guide/ad-guide';
 import { OdGuide } from './guides/od-guide/od-guide';
 import { KdGuide } from './guides/kd-guide/kd-guide';
+import { CompanyRegistration } from './pages/company-registration/company-registration';
 
 export const routes: Routes = [
   { path: '', component: Home }, 
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'ad', component: AdGuide },
   { path: 'od', component: OdGuide },
   { path: 'kd', component: KdGuide },
+  { path: 'register-firm', component: CompanyRegistration },
 
   { path: '**', redirectTo: '' }
 ];

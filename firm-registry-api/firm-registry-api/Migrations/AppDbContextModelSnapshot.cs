@@ -187,7 +187,7 @@ namespace firm_registry_api.Migrations
                             Id = 20,
                             ActivityGroupId = 1,
                             Code = "1.43",
-                            Description = "Uz¬goj ko¬nja i dru¬gih ko¬pi¬ta¬ra"
+                            Description = "Uz¬goj konja i drugih kopitara"
                         },
                         new
                         {
@@ -5107,11 +5107,6 @@ namespace firm_registry_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("CompanyType")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -5141,12 +5136,10 @@ namespace firm_registry_api.Migrations
 
                     b.ToTable("CompanyRequests");
 
-                    b.HasDiscriminator<string>("CompanyType").HasValue("CompanyRequest");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
-            modelBuilder.Entity("firm_registry_api.Models.Founder", b =>
+            modelBuilder.Entity("firm_registry_api.Models.GeneralPartner", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -5157,7 +5150,42 @@ namespace firm_registry_api.Migrations
                     b.Property<int>("AddressId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CompanyRequestId")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LimitedPartnershipRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Share")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("LimitedPartnershipRequestId");
+
+                    b.ToTable("GeneralPartners");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedCompanyFounder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
                         .HasColumnType("integer");
 
                     b.Property<string>("FirstName")
@@ -5168,23 +5196,11 @@ namespace firm_registry_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("JointStockCompanyRequestId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("LimitedCompanyRequestId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("LimitedPartnershipRequestId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("LimitedPartnershipRequestId1")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("PartnershipRequestId")
+                    b.Property<int>("LimitedCompanyRequestId")
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("Share")
@@ -5194,19 +5210,83 @@ namespace firm_registry_api.Migrations
 
                     b.HasIndex("AddressId");
 
-                    b.HasIndex("CompanyRequestId");
-
-                    b.HasIndex("JointStockCompanyRequestId");
-
                     b.HasIndex("LimitedCompanyRequestId");
+
+                    b.ToTable("LimitedCompanyFounders");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedPartner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("LimitedPartnershipRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Share")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("LimitedPartnershipRequestId");
 
-                    b.HasIndex("LimitedPartnershipRequestId1");
+                    b.ToTable("LimitedPartners");
+                });
 
-                    b.HasIndex("PartnershipRequestId");
+            modelBuilder.Entity("firm_registry_api.Models.Owner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.ToTable("Founders");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EntrepreneurRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("EntrepreneurRequestId")
+                        .IsUnique();
+
+                    b.ToTable("Owners");
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.User", b =>
@@ -5259,16 +5339,87 @@ namespace firm_registry_api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("firm_registry_api.Models.firm_registry_api.Models.Partner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PartnershipRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Share")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("PartnershipRequestId");
+
+                    b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.firm_registry_api.Models.Shareholder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("JMBG")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("JointStockCompanyRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("Share")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("JointStockCompanyRequestId");
+
+                    b.ToTable("Shareholders");
+                });
+
             modelBuilder.Entity("firm_registry_api.Models.EntrepreneurRequest", b =>
                 {
                     b.HasBaseType("firm_registry_api.Models.CompanyRequest");
 
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("OwnerId");
-
-                    b.HasDiscriminator().HasValue("Entrepreneur");
+                    b.ToTable("EntrepreneurRequests", (string)null);
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.JointStockCompanyRequest", b =>
@@ -5282,7 +5433,7 @@ namespace firm_registry_api.Migrations
                     b.Property<decimal>("ShareCapital")
                         .HasColumnType("numeric");
 
-                    b.HasDiscriminator().HasValue("JointStockCompany");
+                    b.ToTable("JointStockCompanyRequests", (string)null);
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.LimitedCompanyRequest", b =>
@@ -5296,27 +5447,21 @@ namespace firm_registry_api.Migrations
                     b.Property<decimal>("ShareCapital")
                         .HasColumnType("numeric");
 
-                    b.ToTable("CompanyRequests", t =>
-                        {
-                            t.Property("ShareCapital")
-                                .HasColumnName("LimitedCompanyRequest_ShareCapital");
-                        });
-
-                    b.HasDiscriminator().HasValue("LimitedCompany");
+                    b.ToTable("LimitedCompanyRequests", (string)null);
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.LimitedPartnershipRequest", b =>
                 {
                     b.HasBaseType("firm_registry_api.Models.CompanyRequest");
 
-                    b.HasDiscriminator().HasValue("LimitedPartnership");
+                    b.ToTable("LimitedPartnershipRequests", (string)null);
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.PartnershipRequest", b =>
                 {
                     b.HasBaseType("firm_registry_api.Models.CompanyRequest");
 
-                    b.HasDiscriminator().HasValue("Partnership");
+                    b.ToTable("PartnershipRequests", (string)null);
                 });
 
             modelBuilder.Entity("ActivityCode", b =>
@@ -5368,7 +5513,7 @@ namespace firm_registry_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("firm_registry_api.Models.Founder", b =>
+            modelBuilder.Entity("firm_registry_api.Models.GeneralPartner", b =>
                 {
                     b.HasOne("firm_registry_api.Models.Address", "Address")
                         .WithMany()
@@ -5376,46 +5521,155 @@ namespace firm_registry_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("firm_registry_api.Models.CompanyRequest", "CompanyRequest")
-                        .WithMany()
-                        .HasForeignKey("CompanyRequestId")
+                    b.HasOne("firm_registry_api.Models.LimitedPartnershipRequest", "LimitedPartnershipRequest")
+                        .WithMany("GeneralPartners")
+                        .HasForeignKey("LimitedPartnershipRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("firm_registry_api.Models.JointStockCompanyRequest", null)
-                        .WithMany("Shareholders")
-                        .HasForeignKey("JointStockCompanyRequestId");
+                    b.Navigation("Address");
 
-                    b.HasOne("firm_registry_api.Models.LimitedCompanyRequest", null)
+                    b.Navigation("LimitedPartnershipRequest");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedCompanyFounder", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("firm_registry_api.Models.LimitedCompanyRequest", "LimitedCompanyRequest")
                         .WithMany("Founders")
-                        .HasForeignKey("LimitedCompanyRequestId");
-
-                    b.HasOne("firm_registry_api.Models.LimitedPartnershipRequest", null)
-                        .WithMany("GeneralPartners")
-                        .HasForeignKey("LimitedPartnershipRequestId");
-
-                    b.HasOne("firm_registry_api.Models.LimitedPartnershipRequest", null)
-                        .WithMany("LimitedPartners")
-                        .HasForeignKey("LimitedPartnershipRequestId1");
-
-                    b.HasOne("firm_registry_api.Models.PartnershipRequest", null)
-                        .WithMany("Partners")
-                        .HasForeignKey("PartnershipRequestId");
+                        .HasForeignKey("LimitedCompanyRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Address");
 
-                    b.Navigation("CompanyRequest");
+                    b.Navigation("LimitedCompanyRequest");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedPartner", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("firm_registry_api.Models.LimitedPartnershipRequest", "LimitedPartnershipRequest")
+                        .WithMany("LimitedPartners")
+                        .HasForeignKey("LimitedPartnershipRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("LimitedPartnershipRequest");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.Owner", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("firm_registry_api.Models.EntrepreneurRequest", "EntrepreneurRequest")
+                        .WithOne("Owner")
+                        .HasForeignKey("firm_registry_api.Models.Owner", "EntrepreneurRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("EntrepreneurRequest");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.firm_registry_api.Models.Partner", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("firm_registry_api.Models.PartnershipRequest", "PartnershipRequest")
+                        .WithMany("Partners")
+                        .HasForeignKey("PartnershipRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("PartnershipRequest");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.firm_registry_api.Models.Shareholder", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("firm_registry_api.Models.JointStockCompanyRequest", "JointStockCompanyRequest")
+                        .WithMany("Shareholders")
+                        .HasForeignKey("JointStockCompanyRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("JointStockCompanyRequest");
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.EntrepreneurRequest", b =>
                 {
-                    b.HasOne("firm_registry_api.Models.Founder", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
+                    b.HasOne("firm_registry_api.Models.CompanyRequest", null)
+                        .WithOne()
+                        .HasForeignKey("firm_registry_api.Models.EntrepreneurRequest", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.Navigation("Owner");
+            modelBuilder.Entity("firm_registry_api.Models.JointStockCompanyRequest", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.CompanyRequest", null)
+                        .WithOne()
+                        .HasForeignKey("firm_registry_api.Models.JointStockCompanyRequest", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedCompanyRequest", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.CompanyRequest", null)
+                        .WithOne()
+                        .HasForeignKey("firm_registry_api.Models.LimitedCompanyRequest", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.LimitedPartnershipRequest", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.CompanyRequest", null)
+                        .WithOne()
+                        .HasForeignKey("firm_registry_api.Models.LimitedPartnershipRequest", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.PartnershipRequest", b =>
+                {
+                    b.HasOne("firm_registry_api.Models.CompanyRequest", null)
+                        .WithOne()
+                        .HasForeignKey("firm_registry_api.Models.PartnershipRequest", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.ActivityGroup", b =>
@@ -5426,6 +5680,12 @@ namespace firm_registry_api.Migrations
             modelBuilder.Entity("firm_registry_api.Models.ActivitySector", b =>
                 {
                     b.Navigation("Groups");
+                });
+
+            modelBuilder.Entity("firm_registry_api.Models.EntrepreneurRequest", b =>
+                {
+                    b.Navigation("Owner")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("firm_registry_api.Models.JointStockCompanyRequest", b =>

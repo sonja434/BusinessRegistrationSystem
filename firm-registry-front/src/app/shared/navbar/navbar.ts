@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +29,7 @@ export class Navbar implements OnDestroy {
   email: string | null = null;
   private sub = new Subscription();
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private router: Router) {
     this.sub.add(
       this.auth.authChanges().subscribe(val => {
         this.isLoggedIn = val;
@@ -41,6 +41,7 @@ export class Navbar implements OnDestroy {
 
   logout() {
     this.auth.logout();
+    this.router.navigate(['/']);
   }
 
   ngOnDestroy() {

@@ -1,6 +1,6 @@
 ﻿namespace firm_registry_api.Models
 {
-    public class Founder
+    public class GeneralPartner
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -8,8 +8,7 @@
         public string JMBG { get; set; }
         public Address Address { get; set; }
         public decimal? Share { get; set; }
-        public int CompanyRequestId { get; set; }
-        public CompanyRequest CompanyRequest { get; set; }
+        public int LimitedPartnershipRequestId { get; set; }
+        public LimitedPartnershipRequest LimitedPartnershipRequest { get; set; }
     }
-
 }
