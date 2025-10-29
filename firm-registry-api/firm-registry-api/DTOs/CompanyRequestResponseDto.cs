@@ -14,5 +14,6 @@ namespace firm_registry_api.DTOs
         public string AdminNotes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public int UserId { get; set; }
     }
 }

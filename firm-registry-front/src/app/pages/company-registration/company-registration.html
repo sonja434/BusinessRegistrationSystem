@@ -1,0 +1,516 @@
+<mat-horizontal-stepper #stepper linear>
+    <mat-step [stepControl]="generalForm" label="Opšti podaci">
+        <form [formGroup]="generalForm">
+            <mat-card>
+                <mat-card-title>Opšti podaci o firmi</mat-card-title>
+                <mat-card-content>
+                    <div class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Naziv kompanije</mat-label>
+                            <input matInput formControlName="companyName" required />
+                            <mat-icon matSuffix>business</mat-icon>
+                            <mat-error
+                                *ngIf="generalForm.get('companyName')?.invalid && generalForm.get('companyName')?.touched">
+                                Obavezno polje
+                            </mat-error>
+                        </mat-form-field>
+                        
+                        <div></div>
+                    </div>
+
+                    <h3 style="margin-top: 20px;"><mat-icon style="margin-right: 5px; vertical-align: bottom;">category</mat-icon> Izbor šifre delatnosti (NKD)</h3>
+                    <div class="form-grid">
+                        
+                        <mat-form-field appearance="outline">
+                            <mat-label>1. Sektor delatnosti</mat-label>
+                            <mat-select formControlName="activitySectorId" required>
+                                <mat-option *ngFor="let sector of sectors" [value]="sector.id">
+                                    Sektor: {{ sector.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="generalForm.get('activitySectorId')?.invalid && generalForm.get('activitySectorId')?.touched">
+                                Izaberite sektor
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>2. Grupa delatnosti</mat-label>
+                            <mat-select formControlName="activityGroupId" required [disabled]="!generalForm.get('activitySectorId')?.value || groups.length === 0">
+                                <mat-option *ngFor="let group of groups" [value]="group.id">
+                                    Grupa: {{ group.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="generalForm.get('activityGroupId')?.invalid && generalForm.get('activityGroupId')?.touched">
+                                Izaberite grupu
+                            </mat-error>
+                            <mat-hint *ngIf="generalForm.get('activitySectorId')?.value && groups.length === 0">Nema dostupnih grupa za ovaj sektor.</mat-hint>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>3. Šifra delatnosti</mat-label>
+                            <mat-select formControlName="activityCodeId" required [disabled]="!generalForm.get('activityGroupId')?.value || codes.length === 0">
+                                <mat-option *ngFor="let code of codes" [value]="code.id">
+                                    {{ code.code }} - {{ code.description }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-icon matSuffix>code</mat-icon>
+                            <mat-error *ngIf="generalForm.get('activityCodeId')?.invalid && generalForm.get('activityCodeId')?.touched">
+                                Izaberite finalnu šifru
+                            </mat-error>
+                            <mat-hint *ngIf="generalForm.get('activityGroupId')?.value && codes.length === 0">Nema dostupnih šifara za ovu grupu.</mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <mat-divider></mat-divider>
+
+                    <h3><mat-icon style="margin-right: 5px; vertical-align: bottom;">location_on</mat-icon> Adresa sedišta</h3>
+                    <div formGroupName="address" class="form-grid">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Ulica</mat-label>
+                            <input matInput formControlName="street" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Broj</mat-label>
+                            <input matInput type="number" formControlName="number" required />
+                            <mat-error *ngIf="generalForm.get('address.number')?.hasError('min')">
+                                Broj ne može biti manji od 1
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Grad</mat-label>
+                            <input matInput formControlName="city" required />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Država</mat-label>
+                            <input matInput formControlName="country" required />
+                        </mat-form-field>
+                    </div>
+                </mat-card-content>
+
+                <mat-card-actions align="end">
+                    <button mat-raised-button color="primary" matStepperNext [disabled]="generalForm.invalid">
+                        Dalje <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="typeForm" label="Tip firme">
+        <form [formGroup]="typeForm">
+            <mat-card>
+                <mat-card-title>Izaberite tip firme</mat-card-title>
+                <mat-radio-group formControlName="companyType" class="radio-group">
+                    <mat-radio-button value="PR">PR - Preduzetnik</mat-radio-button>
+                    <mat-radio-button value="DOO">DOO - Društvo sa ograničenom odgovornošću</mat-radio-button>
+                    <mat-radio-button value="AD">AD - Akcionarsko društvo</mat-radio-button>
+                    <mat-radio-button value="OD">OD - Ortačko društvo</mat-radio-button>
+                    <mat-radio-button value="KD">KD - Komanditno društvo</mat-radio-button>
+                </mat-radio-group>
+
+                <mat-card-actions align="end">
+                    <button mat-stroked-button color="accent" matStepperPrevious> Nazad </button>
+                    <button mat-raised-button color="primary" matStepperNext [disabled]="typeForm.invalid">
+                        Dalje
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="specificForm" label="Specifični podaci">
+        <form [formGroup]="specificForm">
+            <mat-card>
+                <mat-card-title>Specifični podaci za {{ typeForm.value.companyType }}</mat-card-title>
+                <mat-card-content>
+                    <div *ngIf="typeForm.value.companyType === 'PR'" formGroupName="owner">
+                        <h3>Vlasnik</h3>
+                        <div class="form-grid">
+                            <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                            <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                            <mat-form-field appearance="outline"> 
+                                <mat-label>JMBG</mat-label> 
+                                <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                <mat-error *ngIf="specificForm.get('owner.jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <h4>Adresa vlasnika</h4>
+                        <div formGroupName="address" class="form-grid">
+                            <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                            <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                            <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                            <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div *ngIf="typeForm.value.companyType === 'DOO'">
+                        <div class="form-grid">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Ime i prezime direktora</mat-label>
+                                <input matInput formControlName="directorFullName" required />
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label>Osnovni kapital (min. 100)</mat-label>
+                                <input matInput type="number" formControlName="shareCapital" required />
+                                <mat-error *ngIf="specificForm.get('shareCapital')?.hasError('min')">Minimalni kapital je 100</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <h3>Osnivači</h3>
+                        <div formArrayName="founders">
+                            <div *ngFor="let founder of founders.controls; let i = index" [formGroupName]="i" class="founder-card">
+                                <mat-card>
+                                    <mat-card-subtitle>Osnivač {{ i + 1 }}</mat-card-subtitle>
+                                    <div class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>JMBG</mat-label> 
+                                            <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                            <mat-error *ngIf="founder.get('jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>Udeo (%)</mat-label> 
+                                            <input matInput type="number" formControlName="share" required /> 
+                                            <mat-error *ngIf="founder.get('share')?.hasError('max')">Max udeo je 100%</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    
+                                    <h4>Adresa osnivača</h4>
+                                    <div formGroupName="address" class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                                    </div>
+
+                                    <button mat-icon-button color="warn" (click)="removeFounder(i)" *ngIf="founders.length > 1"> <mat-icon>delete</mat-icon> </button>
+                                </mat-card>
+                            </div>
+                        </div>
+
+                        <button mat-stroked-button color="primary" (click)="addFounder()"> <mat-icon>add</mat-icon> Dodaj osnivača </button>
+
+                        <mat-error *ngIf="specificForm.hasError('totalShare')"> Ukupan udeo osnivača mora biti 100% </mat-error>
+                        <mat-error *ngIf="specificForm.get('founders')?.hasError('atLeastOne') && specificForm.get('founders')?.touched"> Mora postojati bar jedan osnivač </mat-error>
+                    </div>
+
+                    <div *ngIf="typeForm.value.companyType === 'AD'">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Osnovni kapital (min. 3.000.000)</mat-label>
+                            <input matInput type="number" formControlName="shareCapital" required />
+                            <mat-error *ngIf="specificForm.get('shareCapital')?.hasError('min')">Minimalni kapital je 3.000.000</mat-error>
+                        </mat-form-field>
+
+                        <h3>Akcionari</h3>
+                        <div formArrayName="shareholders">
+                            <div *ngFor="let s of shareholders.controls; let i = index" [formGroupName]="i" class="founder-card">
+                                <mat-card>
+                                    <mat-card-subtitle>Akcionar {{ i + 1 }}</mat-card-subtitle>
+                                    <div class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>JMBG</mat-label> 
+                                            <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                            <mat-error *ngIf="s.get('jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>Udeo (%)</mat-label> 
+                                            <input matInput type="number" formControlName="share" required /> 
+                                            <mat-error *ngIf="s.get('share')?.hasError('max')">Max udeo je 100%</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    
+                                    <h4>Adresa akcionara</h4>
+                                    <div formGroupName="address" class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                                    </div>
+                                    
+                                    <button mat-icon-button color="warn" (click)="removeShareholder(i)" *ngIf="shareholders.length > 1"> <mat-icon>delete</mat-icon> </button>
+                                </mat-card>
+                            </div>
+                        </div>
+
+                        <button mat-stroked-button color="primary" (click)="addShareholder()"> <mat-icon>add</mat-icon> Dodaj akcionara </button>
+                        <mat-error *ngIf="specificForm.hasError('totalShare')"> Ukupan udeo akcionara mora biti 100% </mat-error>
+                        <mat-error *ngIf="specificForm.get('shareholders')?.hasError('atLeastOne') && specificForm.get('shareholders')?.touched"> Mora postojati bar jedan akcionar </mat-error>
+
+                        <h3>Odbor direktora</h3>
+                        <div formArrayName="boardOfDirectors">
+                            <div *ngFor="let b of boardMembers.controls; let i = index" class="board-card">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Član odbora {{ i + 1 }}</mat-label>
+                                    <input matInput [formControlName]="i" required />
+                                </mat-form-field>
+                                <button mat-icon-button color="warn" (click)="removeBoardMember(i)" *ngIf="boardMembers.length > 1"> <mat-icon>delete</mat-icon> </button>
+                            </div>
+                        </div>
+                        <button mat-stroked-button color="primary" (click)="addBoardMember()"> <mat-icon>add</mat-icon> Dodaj člana odbora </button>
+                        <mat-error *ngIf="specificForm.get('boardOfDirectors')?.hasError('atLeastOne') && specificForm.get('boardOfDirectors')?.touched"> Mora postojati bar jedan član odbora </mat-error>
+                    </div>
+
+                    <div *ngIf="typeForm.value.companyType === 'OD'">
+                        <h3>Partneri</h3>
+                        <div formArrayName="partners">
+                            <div *ngFor="let p of partners.controls; let i = index" [formGroupName]="i" class="founder-card">
+                                <mat-card>
+                                    <mat-card-subtitle>Partner {{ i + 1 }}</mat-card-subtitle>
+                                    <div class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>JMBG</mat-label> 
+                                            <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                            <mat-error *ngIf="p.get('jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    
+                                    <h4>Adresa partnera</h4>
+                                    <div formGroupName="address" class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                                    </div>
+                                    
+                                    <button mat-icon-button color="warn" (click)="removePartner(i)" *ngIf="partners.length > 1"> <mat-icon>delete</mat-icon> </button>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <button mat-stroked-button color="primary" (click)="addPartner()"> <mat-icon>add</mat-icon> Dodaj partnera </button>
+                        <mat-error *ngIf="specificForm.get('partners')?.hasError('atLeastOne') && specificForm.get('partners')?.touched"> Mora postojati bar jedan partner </mat-error>
+                    </div>
+
+                    <div *ngIf="typeForm.value.companyType === 'KD'">
+                        <h3>Komplementari (Neograničena odgovornost)</h3>
+                        <div formArrayName="generalPartners">
+                            <div *ngFor="let g of generalPartners.controls; let i = index" [formGroupName]="i" class="founder-card">
+                                <mat-card>
+                                    <mat-card-subtitle>Komplementar {{ i + 1 }}</mat-card-subtitle>
+                                    <div class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>JMBG</mat-label> 
+                                            <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                            <mat-error *ngIf="g.get('jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>Udeo (%)</mat-label> 
+                                            <input matInput type="number" formControlName="share" required /> 
+                                            <mat-error *ngIf="g.get('share')?.hasError('max')">Max udeo je 100%</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <h4>Adresa komplementara</h4>
+                                    <div formGroupName="address" class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                                    </div>
+                                    <button mat-icon-button color="warn" (click)="removeGeneralPartner(i)" *ngIf="generalPartners.length > 1"> <mat-icon>delete</mat-icon> </button>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <button mat-stroked-button color="primary" (click)="addGeneralPartner()"> <mat-icon>add</mat-icon> Dodaj komplementara </button>
+                        <mat-error *ngIf="specificForm.get('generalPartners')?.hasError('atLeastOne') && specificForm.get('generalPartners')?.touched"> Mora postojati bar jedan komplementar </mat-error>
+
+                        <h3>Komanditori (Ograničena odgovornost)</h3>
+                        <div formArrayName="limitedPartners">
+                            <div *ngFor="let l of limitedPartners.controls; let i = index" [formGroupName]="i" class="founder-card">
+                                <mat-card>
+                                    <mat-card-subtitle>Komanditor {{ i + 1 }}</mat-card-subtitle>
+                                    <div class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ime</mat-label> <input matInput formControlName="firstName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Prezime</mat-label> <input matInput formControlName="lastName" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>JMBG</mat-label> 
+                                            <input matInput formControlName="jmbg" required maxlength="13" /> 
+                                            <mat-error *ngIf="l.get('jmbg')?.hasError('pattern')">JMBG mora imati 13 cifara</mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field appearance="outline"> 
+                                            <mat-label>Udeo (%)</mat-label> 
+                                            <input matInput type="number" formControlName="share" required /> 
+                                            <mat-error *ngIf="l.get('share')?.hasError('max')">Max udeo je 100%</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <h4>Adresa komanditora</h4>
+                                    <div formGroupName="address" class="form-grid">
+                                        <mat-form-field appearance="outline"> <mat-label>Ulica</mat-label> <input matInput formControlName="street" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Broj</mat-label> <input matInput type="number" formControlName="number" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Grad</mat-label> <input matInput formControlName="city" required /> </mat-form-field>
+                                        <mat-form-field appearance="outline"> <mat-label>Država</mat-label> <input matInput formControlName="country" required /> </mat-form-field>
+                                    </div>
+                                    <button mat-icon-button color="warn" (click)="removeLimitedPartner(i)" *ngIf="limitedPartners.length > 1"> <mat-icon>delete</mat-icon> </button>
+                                </mat-card>
+                            </div>
+                        </div>
+                        <button mat-stroked-button color="primary" (click)="addLimitedPartner()"> <mat-icon>add</mat-icon> Dodaj komanditora </button>
+                        <mat-error *ngIf="specificForm.get('limitedPartners')?.hasError('atLeastOne') && specificForm.get('limitedPartners')?.touched"> Mora postojati bar jedan komanditor </mat-error>
+
+                        <mat-error *ngIf="specificForm.hasError('totalShare')"> Ukupan zbir udela mora biti 100% </mat-error>
+                    </div>
+                </mat-card-content>
+
+                <mat-card-actions align="end">
+                    <button mat-stroked-button color="accent" matStepperPrevious> Nazad </button>
+                    <button mat-raised-button color="primary" matStepperNext [disabled]="specificForm.invalid">
+                        Dalje
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="documentForm" label="Dokumenta">
+        <form [formGroup]="documentForm">
+            <mat-card>
+                <mat-card-title>Dokumenta</mat-card-title>
+                <mat-card-content>
+                    <input type="file" (change)="onFilesSelected($event.target.files)" multiple #fileInput />
+                    <ul>
+                        <li *ngFor="let file of selectedFiles; let i = index">
+                            {{ file.name }}
+                            <button mat-icon-button color="warn" (click)="removeFile(i)"> <mat-icon>delete</mat-icon> </button>
+                        </li>
+                    </ul>
+                </mat-card-content>
+
+                <mat-card-actions align="end">
+                    <button mat-stroked-button color="accent" matStepperPrevious> Nazad </button>
+                    <button mat-raised-button color="primary" matStepperNext> Pregled </button>
+                </mat-card-actions>
+            </mat-card>
+        </form>
+    </mat-step>
+
+    <mat-step [stepControl]="reviewForm" label="Pregled i slanje">
+        <mat-card>
+            <mat-card-title>Pregled zahteva za registraciju firme ({{ typeForm.value.companyType }})</mat-card-title>
+            <mat-card-content>
+                <h3>Opšti podaci</h3>
+                <mat-list role="list">
+                    <mat-list-item role="listitem">Naziv: {{ generalForm.value.companyName }}</mat-list-item>
+                    <mat-list-item role="listitem">
+                        Šifra delatnosti:<span *ngIf="getCodeDescription()">{{ getCodeDescription() }}</span>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">Tip firme: {{ typeForm.value.companyType }}</mat-list-item>
+                </mat-list>
+                
+                <h4>Adresa sedišta</h4>
+                <mat-list role="list">
+                    <mat-list-item role="listitem">Ulica i broj: {{ generalForm.value.address.street }} {{ generalForm.value.address.number }}</mat-list-item>
+                    <mat-list-item role="listitem">Grad/Država: {{ generalForm.value.address.city }}, {{ generalForm.value.address.country }}</mat-list-item>
+                </mat-list>
+                
+                <mat-divider></mat-divider>
+                
+                <h3>Specifični podaci</h3>
+                
+                <div *ngIf="typeForm.value.companyType === 'DOO' || typeForm.value.companyType === 'AD'">
+                    <mat-list>
+                        <mat-list-item>Osnovni kapital: {{ specificForm.value.shareCapital | number: '1.2-2' }}</mat-list-item>
+                    </mat-list>
+                </div>
+
+                <div *ngIf="typeForm.value.companyType === 'DOO'">
+                    <mat-list>
+                        <mat-list-item>Direktor: {{ specificForm.value.directorFullName }}</mat-list-item>
+                    </mat-list>
+                    <h4>Osnivači</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let f of founders.value; let i = index">
+                            {{ i + 1 }}. {{ f.firstName }} {{ f.lastName }} (JMBG: {{ f.jmbg }}, Udeo: {{ f.share }}%)
+                            <br> Adresa: {{ f.address.street }} {{ f.address.number }}, {{ f.address.city }}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+                <div *ngIf="typeForm.value.companyType === 'AD'">
+                    <h4>Akcionari</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let s of shareholders.value; let i = index">
+                            {{ i + 1 }}. {{ s.firstName }} {{ s.lastName }} (JMBG: {{ s.jmbg }}, Udeo: {{ s.share }}%)
+                            <br> Adresa: {{ s.address.street }} {{ s.address.number }}, {{ s.address.city }}
+                        </mat-list-item>
+                    </mat-list>
+                    <h4>Odbor direktora</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let b of boardMembers.value; let i = index">
+                            {{ i + 1 }}. {{ b }}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                
+                <div *ngIf="typeForm.value.companyType === 'PR'">
+                    <h4>Vlasnik</h4>
+                    <mat-list>
+                        <mat-list-item>Ime i Prezime: {{ specificForm.value.owner.firstName }} {{ specificForm.value.owner.lastName }}</mat-list-item>
+                        <mat-list-item>JMBG: {{ specificForm.value.owner.jmbg }}</mat-list-item>
+                        <mat-list-item>Adresa: {{ specificForm.value.owner.address.street }} {{ specificForm.value.owner.address.number }}, {{ specificForm.value.owner.address.city }}</mat-list-item>
+                    </mat-list>
+                </div>
+                
+                <div *ngIf="typeForm.value.companyType === 'OD'">
+                    <h4>Partneri</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let p of partners.value; let i = index">
+                            {{ i + 1 }}. {{ p.firstName }} {{ p.lastName }} (JMBG: {{ p.jmbg }})
+                            <br> Adresa: {{ p.address.street }} {{ p.address.number }}, {{ p.address.city }}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+                <div *ngIf="typeForm.value.companyType === 'KD'">
+                    <h4>Komplementari</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let g of generalPartners.value; let i = index">
+                            {{ i + 1 }}. {{ g.firstName }} {{ g.lastName }} (Udeo: {{ g.share }}%)
+                            <br> Adresa: {{ g.address.street }} {{ g.address.number }}, {{ g.address.city }}
+                        </mat-list-item>
+                    </mat-list>
+                    <h4>Komanditori</h4>
+                    <mat-list>
+                        <mat-list-item *ngFor="let l of limitedPartners.value; let i = index">
+                            {{ i + 1 }}. {{ l.firstName }} {{ l.lastName }} (Udeo: {{ l.share }}%)
+                            <br> Adresa: {{ l.address.street }} {{ l.address.number }}, {{ l.address.city }}
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                
+                <mat-divider></mat-divider>
+
+                <h3>Dokumenta ({{ selectedFiles.length }})</h3>
+                <ul *ngIf="selectedFiles.length > 0; else noFiles">
+                    <li *ngFor="let file of selectedFiles; let i = index">
+                        {{ file.name }}
+                    </li>
+                </ul>
+                <ng-template #noFiles>
+                    <p>Nema priloženih dokumenata.</p>
+                </ng-template>
+
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                <button mat-stroked-button color="accent" matStepperPrevious> Nazad </button>
+                <button
+                    mat-raised-button
+                    color="accent"
+                    (click)="submitRequest()"
+                    [disabled]="isSubmitting"
+                >
+                    <mat-icon *ngIf="isSubmitting">hourglass_empty</mat-icon>
+                    <span *ngIf="!isSubmitting">Pošalji zahtev</span>
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </mat-step>
+</mat-horizontal-stepper>

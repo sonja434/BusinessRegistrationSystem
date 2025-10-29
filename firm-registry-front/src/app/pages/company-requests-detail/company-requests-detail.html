@@ -1,0 +1,106 @@
+<mat-card *ngIf="request && !loading" class="detail-card">
+  <mat-card-title>📄 Detalji zahteva #{{ request.id }}</mat-card-title>
+  <mat-card-subtitle>{{ request.companyName }}</mat-card-subtitle>
+
+  <mat-divider></mat-divider>
+
+  <div class="meta">
+    <p><strong>Tip:</strong> {{ getCompanyType(request.type) }}</p>
+    <p><strong>Status:</strong> {{ getRequestStatus(request.status) }}</p>
+    <p><strong>Kreiran:</strong> {{ request.createdAt | date:'dd.MM.yyyy HH:mm' }}</p>
+    <p><strong>Ažuriran:</strong> {{ request.updatedAt | date:'dd.MM.yyyy HH:mm' }}</p>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <section>
+    <h3><mat-icon>location_on</mat-icon> Adresa</h3>
+    <p>{{ request.address.street }} {{ request.address.number }}, {{ request.address.city }}, {{ request.address.country
+      }}</p>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <section *ngIf="allMembers.length">
+    <h3><mat-icon>group</mat-icon> Osnivači / Članovi</h3>
+
+    <div *ngFor="let f of allMembers" class="founder-item">
+      👤 <strong>{{ f.firstName }} {{ f.lastName }}</strong>
+      <div *ngIf="f.jmbg">JMBG: {{ f.jmbg }}</div>
+      <div *ngIf="f.address">
+        Adresa: {{ f.address.street }} {{ f.address.number }}, {{ f.address.city }}, {{ f.address.country }}
+      </div>
+      <div *ngIf="f.share">Udeo: {{ f.share }}%</div>
+    </div>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <section>
+    <h3><mat-icon>folder</mat-icon> Dokumenta</h3>
+
+    <div class="docs" *ngIf="existingDocuments.length; else noDocs">
+      <div *ngFor="let doc of existingDocuments" class="doc-item">
+        <mat-icon color="primary">insert_drive_file</mat-icon>
+        <span class="doc-name" (click)="downloadDocument(doc)" matTooltip="Preuzmi dokument">
+          {{ doc }}
+        </span>
+
+        <div class="doc-actions">
+          <button mat-icon-button color="warn" (click)="removeDocument(doc)" matTooltip="Ukloni" *ngIf="!isCancelled()">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="newDocuments.length && !isCancelled()" class="docs">
+      <h4>📎 Novi dokumenti za slanje</h4>
+      <div *ngFor="let file of newDocuments" class="doc-item">
+        <mat-icon color="primary">attach_file</mat-icon>
+        <span class="doc-name">{{ file.name }}</span>
+        <div class="doc-actions">
+          <button mat-icon-button color="warn" (click)="removeNewDocument(file)" matTooltip="Ukloni">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noDocs>
+      <p class="empty-docs">Nema dokumenata.</p>
+    </ng-template>
+
+    <div class="upload-box" *ngIf="!isCancelled()">
+      <input type="file" #fileInput multiple (change)="onFileSelected($event)" hidden />
+      <button mat-stroked-button color="primary" (click)="fileInput.click()" type="button">
+        <mat-icon>upload_file</mat-icon> Dodaj dokumente
+      </button>
+    </div>
+  </section>
+
+
+
+  <mat-divider></mat-divider>
+
+  <section>
+    <h3><mat-icon>info</mat-icon> Napomena administratora</h3>
+    <p>{{ request.adminNotes || 'Nema napomena.' }}</p>
+  </section>
+
+  <div class="actions">
+    <button mat-stroked-button color="primary" (click)="updateRequest()" [disabled]="isCancelled()">
+      💾 Sačuvaj izmene
+    </button>
+
+    <button mat-stroked-button color="warn" (click)="cancelRequest()" [disabled]="isCancelled()">
+      ❌ Otkaži zahtev
+    </button>
+
+    <button mat-flat-button color="accent" (click)="downloadPdf()">
+      📄 Preuzmi PDF
+    </button>
+  </div>
+</mat-card>
+
+<mat-spinner *ngIf="loading"></mat-spinner>

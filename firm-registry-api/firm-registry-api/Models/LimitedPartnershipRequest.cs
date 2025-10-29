@@ -2,7 +2,7 @@
 {
     public class LimitedPartnershipRequest : CompanyRequest
     {
-        public List<Founder> GeneralPartners { get; set; } = new List<Founder>();
-        public List<Founder> LimitedPartners { get; set; } = new List<Founder>();
+        public List<GeneralPartner> GeneralPartners { get; set; } = new List<GeneralPartner>();
+        public List<LimitedPartner> LimitedPartners { get; set; } = new List<LimitedPartner>();
     }
 }

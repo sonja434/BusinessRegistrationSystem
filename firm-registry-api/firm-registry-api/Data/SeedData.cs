@@ -142,7 +142,7 @@ namespace firm_registry_api.Data
             new ActivityCode { Id = 17, Code = "1.3", Description = "Gajenje sadnog materijala", ActivityGroupId = 1 },
             new ActivityCode { Id = 18, Code = "1.41", Description = "Uzgoj muznih krava", ActivityGroupId = 1 },
             new ActivityCode { Id = 19, Code = "1.42", Description = "Uzgoj drugih goveda i bivola", ActivityGroupId = 1 },
-            new ActivityCode { Id = 20, Code = "1.43", Description = "Uz¬goj ko¬nja i dru¬gih ko¬pi¬ta¬ra", ActivityGroupId = 1 },
+            new ActivityCode { Id = 20, Code = "1.43", Description = "Uz¬goj konja i drugih kopitara", ActivityGroupId = 1 },
             new ActivityCode { Id = 21, Code = "1.44", Description = "Uzgoj kamila i lama", ActivityGroupId = 1 },
             new ActivityCode { Id = 22, Code = "1.45", Description = "Uzgoj ovaca i koza", ActivityGroupId = 1 },
             new ActivityCode { Id = 23, Code = "1.46", Description = "Uzgoj svinja", ActivityGroupId = 1 },

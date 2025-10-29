@@ -1,0 +1,51 @@
+<section class="hero">
+    <div class="hero-inner">
+        <h1>Brza i jednostavna registracija vaše firme u Srbiji</h1>
+        <p>Kompletan proces digitalno — pripremite dokumenta, popunite formular i pošaljite zahtev.</p>
+
+        <div class="hero-actions">
+            <button *ngIf="isLoggedIn && !isAdmin" mat-flat-button class="start-btn" routerLink="/register-firm">
+                Započni registraciju
+            </button>
+
+            <button mat-stroked-button class="more-btn" routerLink="/learn-more">
+                Saznaj više
+            </button>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="features">
+    <mat-card class="feature-card">
+        <mat-card-header>
+            <mat-icon>speed</mat-icon>
+            <mat-card-title>Brza procedura</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>Popunite formular online i pratite status u realnom vremenu.</mat-card-content>
+    </mat-card>
+
+
+    <mat-card class="feature-card">
+        <mat-card-header>
+            <mat-icon>security</mat-icon>
+            <mat-card-title>Sigurnost podataka</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>Koristimo šifrovanje i najbolje prakse zaštite podataka.</mat-card-content>
+    </mat-card>
+
+
+    <mat-card class="feature-card">
+        <mat-card-header>
+            <mat-icon>support_agent</mat-icon>
+            <mat-card-title>Podrška korisnicima</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>Tim za podršku je tu da pomogne u svakom koraku.</mat-card-content>
+    </mat-card>
+</section>
+
+
+<footer class="app-footer">
+    <div>© eRegistracija — Republika Srbija</div>
+</footer>

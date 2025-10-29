@@ -1,0 +1,50 @@
+<mat-toolbar class="app-toolbar" color="primary">
+  <div class="toolbar-left">
+    <img src="/grb.png" class="logo" alt="Logo">
+    <span class="app-title">eRegistracija</span>
+  </div>
+
+  <span class="spacer"></span>
+
+  <nav class="desktop-links">
+    <button mat-button routerLink="/">Početna</button>
+    <button mat-button routerLink="/about">O nama</button>
+    <button mat-button routerLink="/contact">Kontakt</button>
+
+    <button mat-stroked-button *ngIf="!isLoggedIn" routerLink="/login">
+      Prijava
+    </button>
+
+    <button mat-button color="accent" *ngIf="isLoggedIn && !isAdmin" routerLink="/profile">
+      Moj profil
+    </button>
+
+    <button mat-button color="accent" *ngIf="isLoggedIn && !isAdmin" routerLink="/user-requests">
+      Moji zahtevi
+    </button>
+
+    <button mat-button color="warn" *ngIf="isLoggedIn && isAdmin" routerLink="/admin-requests">
+      Admin panel
+    </button>
+
+    <button mat-button *ngIf="isLoggedIn" (click)="logout()">
+      Odjava
+    </button>
+  </nav>
+
+  <button mat-icon-button class="mobile-menu" [matMenuTriggerFor]="appMenu" aria-label="Meni">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item routerLink="/">Početna</button>
+    <button mat-menu-item routerLink="/about">O nama</button>
+    <button mat-menu-item routerLink="/contact">Kontakt</button>
+
+    <button *ngIf="!isLoggedIn" mat-menu-item routerLink="/login">Prijava</button>
+    <button *ngIf="isLoggedIn && !isAdmin" mat-menu-item routerLink="/profile">Moj profil</button>
+    <button *ngIf="isLoggedIn && isAdmin" mat-menu-item routerLink="/admin-requests">Admin panel</button>
+    <button *ngIf="isLoggedIn && !isAdmin" mat-menu-item routerLink="/user-requests">Moji zahtevi</button>
+    <button *ngIf="isLoggedIn" mat-menu-item (click)="logout()" routerLink="/">Odjava</button>
+  </mat-menu>
+</mat-toolbar>

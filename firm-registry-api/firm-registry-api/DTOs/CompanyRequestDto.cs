@@ -1,4 +1,5 @@
 ﻿using firm_registry_api.Models.Enums;
+using System.Text.Json.Serialization;
 
 namespace firm_registry_api.DTOs
 {

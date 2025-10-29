@@ -1,0 +1,108 @@
+<mat-card *ngIf="request && !loading" class="detail-card">
+    <mat-card-title>📄 Detalji zahteva #{{ request.id }}</mat-card-title>
+    <mat-card-subtitle>{{ request.companyName }}</mat-card-subtitle>
+
+    <mat-divider></mat-divider>
+
+    <div class="meta">
+        <p><strong>Tip:</strong> {{ getCompanyType(request.type) }}</p>
+        <p><strong>Status:</strong> {{ getRequestStatus(request.status) }}</p>
+        <p><strong>Kreiran:</strong> {{ request.createdAt | date:'dd.MM.yyyy HH:mm' }}</p>
+        <p><strong>Ažuriran:</strong> {{ request.updatedAt | date:'dd.MM.yyyy HH:mm' }}</p>
+        <p><strong>Korisnik ID:</strong> {{ request.userId }}</p>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <section>
+        <h3><mat-icon>location_on</mat-icon> Adresa</h3>
+        <p>{{ request.address.street }} {{ request.address.number }}, {{ request.address.city }}, {{
+            request.address.country }}</p>
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section *ngIf="allMembers.length">
+        <h3><mat-icon>group</mat-icon> Osnivači / Članovi</h3>
+
+        <div *ngFor="let f of allMembers" class="founder-item">
+            👤 <strong>{{ f.firstName }} {{ f.lastName }}</strong>
+            <div *ngIf="f.jmbg">JMBG: {{ f.jmbg }}</div>
+            <div *ngIf="f.address">
+                Adresa: {{ f.address.street }} {{ f.address.number }}, {{ f.address.city }}, {{ f.address.country }}
+            </div>
+            <div *ngIf="f.share">Udeo: {{ f.share }}%</div>
+        </div>
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <section>
+        <h3><mat-icon>folder</mat-icon> Dokumenta</h3>
+
+        <div class="docs" *ngIf="request.documents?.length; else noDocs">
+            <div *ngFor="let doc of request.documents" class="doc-item" (click)="downloadDocument(doc)"
+                matTooltip="Preuzmi dokument">
+                <mat-icon color="primary">insert_drive_file</mat-icon>
+                <span class="doc-name">{{ doc }}</span>
+            </div>
+        </div>
+
+        <ng-template #noDocs>
+            <p class="empty-docs">Nema dokumenata.</p>
+        </ng-template>
+    </section>
+
+    <mat-divider></mat-divider>
+
+    <mat-card class="admin-section" *ngIf="request.adminNotes">
+        <mat-card-title>Komentar administratora</mat-card-title>
+        <mat-card-content>
+            <p>{{ request.adminNotes }}</p>
+        </mat-card-content>
+    </mat-card>
+
+    <section *ngIf="request.status === 0 || request.status === 3; else viewOnly">
+        <h3><mat-icon>info</mat-icon> Napomena administratora</h3>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Promeni status</mat-label>
+            <mat-select [(ngModel)]="newStatus">
+                <mat-option [value]="1">✅ Odobri</mat-option>
+                <mat-option [value]="2">❌ Odbij</mat-option>
+                <mat-option [value]="3">📝 Vrati na reviziju</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Napomena</mat-label>
+            <textarea matInput [(ngModel)]="adminNotes" rows="4" placeholder="Unesi komentar..."></textarea>
+        </mat-form-field>
+
+        <div class="actions">
+            <button mat-flat-button color="primary" (click)="updateByAdmin()">
+                💾 Sačuvaj odluku
+            </button>
+        </div>
+    </section>
+
+    <ng-template #viewOnly>
+        <section *ngIf="request.status === 1" class="view-only approved">
+            <h3><mat-icon>check_circle</mat-icon> Zahtev odobren</h3>
+            <p class="muted">Ovaj zahtev je uspešno odobren. Nije moguće dalje menjanje statusa.</p>
+        </section>
+
+        <section *ngIf="request.status === 2" class="view-only rejected">
+            <h3><mat-icon>cancel</mat-icon> Zahtev odbijen</h3>
+            <p class="muted">Ovaj zahtev je odbijen i ne može se menjati.</p>
+        </section>
+
+        <section *ngIf="request.status === 4" class="view-only cancelled">
+            <h3><mat-icon>block</mat-icon> Zahtev otkazan</h3>
+            <p class="muted">Ovaj zahtev je poništen i nije moguće menjati njegov status ili dodavati napomene.</p>
+        </section>
+    </ng-template>
+
+</mat-card>
+
+<mat-spinner *ngIf="loading"></mat-spinner>

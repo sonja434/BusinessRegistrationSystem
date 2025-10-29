@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using firm_registry_api.DTOs;
 using firm_registry_api.Models;
 using firm_registry_api.Repositories.Interfaces;

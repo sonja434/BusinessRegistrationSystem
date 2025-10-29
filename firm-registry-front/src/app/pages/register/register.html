@@ -1,0 +1,86 @@
+<div class="register-container">
+  <h2>Registracija</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ime</mat-label>
+      <input matInput formControlName="firstName">
+      <mat-error *ngIf="form.controls['firstName']?.invalid">Obavezno polje</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Prezime</mat-label>
+      <input matInput formControlName="lastName">
+      <mat-error *ngIf="form.controls['lastName']?.invalid">Obavezno polje</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>JMBG</mat-label>
+      <input matInput formControlName="jmbg">
+      <mat-error *ngIf="form.controls['jmbg']?.invalid">Unesite 13 cifara</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Datum rođenja</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dateOfBirth">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="form.controls['dateOfBirth']?.invalid">Izaberite datum</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pol</mat-label>
+      <mat-select formControlName="gender">
+        <mat-option [value]="0">Muško</mat-option>
+        <mat-option [value]="1">Žensko</mat-option>
+      </mat-select>
+
+      <mat-error *ngIf="form.controls['gender']?.invalid">Izaberite pol</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Državljanstvo</mat-label>
+      <input matInput formControlName="residence">
+      <mat-error *ngIf="form.controls['residence']?.invalid">Obavezno polje</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email">
+      <mat-error *ngIf="form.controls['email']?.invalid">Neispravan email</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Lozinka</mat-label>
+      <input matInput type="password" formControlName="password">
+      <mat-error *ngIf="form.controls['password']?.invalid">
+        Min. 6 karaktera
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Potvrdi lozinku</mat-label>
+      <input matInput type="password" formControlName="confirmPassword">
+      <mat-error *ngIf="form.hasError('passwordsMismatch') && form.controls['confirmPassword'].touched">
+        Lozinke se moraju poklapati.
+      </mat-error>
+      <mat-error *ngIf="form.controls['confirmPassword'].hasError('required')">
+        Obavezno polje.
+      </mat-error>
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+      <ng-container *ngIf="!loading">Registruj se</ng-container>
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+    </button>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  </form>
+    <p class="login-link">
+      Imaš nalog?
+      <a routerLink="/login">Prijavi se</a>
+    </p>
+</div>

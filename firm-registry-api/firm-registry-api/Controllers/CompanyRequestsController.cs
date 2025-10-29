@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using firm_registry_api.DTOs;
-using firm_registry_api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace firm_registry_api.Controllers
 {
@@ -22,16 +22,78 @@ namespace firm_registry_api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateRequest([FromBody] CompanyRequestDto dto)
+        public async Task<IActionResult> CreateRequest(
+            [FromForm] string request,
+            IFormFileCollection DocumentFiles)
         {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
+            };
+
+            CompanyRequestDto dto;
+
+            try
+            {
+                using var document = JsonDocument.Parse(request);
+                var root = document.RootElement;
+
+                if (!root.TryGetProperty("Type", out var typeElement) || typeElement.ValueKind != JsonValueKind.Number)
+                {
+                    return BadRequest("JSON don't have valid discriminator. 'Type'.");
+                }
+
+                var typeId = typeElement.GetInt32();
+
+                switch (typeId)
+                {
+                    case 0: 
+                        dto = JsonSerializer.Deserialize<EntrepreneurRequestDto>(request, options);
+                        break;
+                    case 1: 
+                        dto = JsonSerializer.Deserialize<LimitedCompanyRequestDto>(request, options);
+                        break;
+                    case 2: 
+                        dto = JsonSerializer.Deserialize<JointStockCompanyRequestDto>(request, options);
+                        break;
+                    case 3: 
+                        dto = JsonSerializer.Deserialize<PartnershipRequestDto>(request, options);
+                        break;
+                    case 4: 
+                        dto = JsonSerializer.Deserialize<LimitedPartnershipRequestDto>(request, options);
+                        break;
+                    default:
+                        return BadRequest("Not known type od compnay.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Invalid aprsing of JSON request: {ex.Message}");
+            }
+
+            if (dto == null)
+            {
+                return BadRequest("Not valid request.");
+            }
+
+
+            dto.DocumentFiles = DocumentFiles.ToList();
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var request = await _service.CreateRequestAsync(dto, userId);
-            return Ok(_mapper.Map<CompanyRequestResponseDto>(request));
+            var entity = await _service.CreateRequestAsync(dto, userId);
+
+            return Ok(_mapper.Map<CompanyRequestResponseDto>(entity));
         }
 
         [HttpPut("user/{id}")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateRequestByUser(int id, [FromBody] UserUpdateCompanyRequestDto dto)
+        public async Task<IActionResult> UpdateRequestByUser(int id, [FromForm] UserUpdateCompanyRequestDto dto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var request = await _service.UpdateRequestByUserAsync(id, dto, userId);

@@ -14,6 +14,7 @@ namespace firm_registry_api.Services
         private readonly IEmailService _emailService;
         private readonly IPdfService _pdfService;
 
+
         public CompanyRequestService(ICompanyRequestRepository repository, IMapper mapper, IEmailService emailService, IPdfService pdfService)
         {
             _repository = repository;
@@ -24,28 +25,31 @@ namespace firm_registry_api.Services
 
         public async Task<CompanyRequest> CreateRequestAsync(CompanyRequestDto dto, int userId)
         {
+
             var entity = _mapper.Map<CompanyRequest>(dto);
             entity.UserId = userId;
             entity.Status = RequestStatus.Pending;
-            entity.CreatedAt = DateTime.Now;
-            entity.UpdatedAt = DateTime.Now;
+            entity.CreatedAt = DateTime.UtcNow;
+            entity.UpdatedAt = DateTime.UtcNow;
+
+            if (entity.Documents == null) entity.Documents = new List<string>();
 
             if (dto.DocumentFiles != null && dto.DocumentFiles.Any())
             {
-                ValidateFiles(dto.DocumentFiles);
+                Directory.CreateDirectory("Uploads");
                 foreach (var file in dto.DocumentFiles)
                 {
                     var fileName = $"{Guid.NewGuid()}_{file.FileName}";
                     var path = Path.Combine("Uploads", fileName);
-                    Directory.CreateDirectory("Uploads"); 
                     using var stream = new FileStream(path, FileMode.Create);
                     await file.CopyToAsync(stream);
-                    entity.Documents.Add(fileName); 
+                    entity.Documents.Add(fileName);
                 }
             }
 
             await _repository.AddAsync(entity);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAsync(); 
+
             return entity;
         }
 
@@ -62,9 +66,19 @@ namespace firm_registry_api.Services
             if (dto.CancelRequest)
                 request.Status = RequestStatus.Cancelled;
 
+            var existing = dto.ExistingDocuments ?? new List<string>();
+            var toDelete = request.Documents.Where(d => !existing.Contains(d)).ToList();
+
+            foreach (var fileName in toDelete)
+            {
+                var path = Path.Combine("Uploads", fileName);
+                if (File.Exists(path))
+                    File.Delete(path);
+                request.Documents.Remove(fileName);
+            }
+
             if (dto.DocumentFiles != null && dto.DocumentFiles.Any())
             {
-                ValidateFiles(dto.DocumentFiles);
                 foreach (var file in dto.DocumentFiles)
                 {
                     var fileName = $"{Guid.NewGuid()}_{file.FileName}";
@@ -76,9 +90,10 @@ namespace firm_registry_api.Services
                 }
             }
 
-            request.UpdatedAt = DateTime.Now;
+            request.UpdatedAt = DateTime.UtcNow;
             await _repository.UpdateAsync(request);
             await _repository.SaveChangesAsync();
+
             return request;
         }
 
@@ -91,13 +106,13 @@ namespace firm_registry_api.Services
 
             request.Status = dto.Status;
             request.AdminNotes = dto.AdminNotes;
-            request.UpdatedAt = DateTime.Now;
+            request.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(request);
             await _repository.SaveChangesAsync();
 
             var emailBody = $"Vaš zahtev za registraciju firme '{request.CompanyName}' je obrađen.\n" +
-                            $"Status: {request.Status}\n" +
+                            $"Status: {request.Status.ToString()}\n" +
                             $"Napomena od admina: {request.AdminNotes}";
 
             await _emailService.SendEmailAsync(request.User.Email, "Vaš zahtev je obrađen", emailBody);
@@ -135,22 +150,5 @@ namespace firm_registry_api.Services
 
             return await _pdfService.GenerateCompanyRequestPdfAsync(request);
         }
-
-        private void ValidateFiles(List<IFormFile> files)
-        {
-            var allowedExtensions = new[] { ".pdf", ".jpg", ".jpeg", ".png" };
-            long maxFileSize = 5 * 1024 * 1024;
-
-            foreach (var file in files)
-            {
-                var extension = Path.GetExtension(file.FileName).ToLower();
-                if (!allowedExtensions.Contains(extension))
-                    throw new InvalidOperationException($"File type '{extension}' is not allowed.");
-
-                if (file.Length > maxFileSize)
-                    throw new InvalidOperationException($"File '{file.FileName}' exceeds maximum size of 5 MB.");
-            }
-        }
-
     }
 }
