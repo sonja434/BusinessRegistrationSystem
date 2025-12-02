@@ -41,7 +41,7 @@ Full-Stack Developer – responsible for implementing both frontend and backend,
 1. Open a terminal and navigate to the backend folder:
 
    ```bash
-   cd backend
+   cd firm-registry-api
    ```
 2. Restore dependencies:
 
@@ -73,7 +73,7 @@ Full-Stack Developer – responsible for implementing both frontend and backend,
 1. Open a terminal and navigate to the frontend folder:
 
    ```bash
-   cd BusinessRegistrationClient
+   cd firm-registry-front
    ```
 2. Install dependencies:
 
@@ -97,4 +97,6 @@ Full-Stack Developer – responsible for implementing both frontend and backend,
 
 > ⚠ Make sure the backend server is running before starting the frontend.
 
-# Screenshot
+## Screenshot
+
+![Screenshot](screenshot.png)
